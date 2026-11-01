@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reports - Shanti Care Hospital</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    /* ট্যাব নেভিগেশন স্টাইল */
+    .tab-bar {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 20px;
+      border-bottom: 2px solid var(--border);
+      padding-bottom: 2px;
+      overflow-x: auto;
+    }
+    .tab-btn {
+      padding: 10px 18px;
+      background: none;
+      border: none;
+      border-bottom: 3px solid transparent;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-light);
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.2s ease;
+    }
+    .tab-btn:hover {
+      color: var(--primary);
+      background: #f1f5f9;
+      border-radius: var(--radius) var(--radius) 0 0;
+    }
+    .tab-btn.active {
+      color: var(--primary);
+      border-bottom-color: var(--primary);
+      background: #eff6ff;
+      border-radius: var(--radius) var(--radius) 0 0;
+    }
+
+    /* ফিল্টার টুলবার */
+    .report-filter-bar {
+      display: flex;
+      gap: 16px;
+      align-items: flex-end;
+      flex-wrap: wrap;
+      background: #f8fafc;
+      padding: 16px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      margin-bottom: 20px;
+    }
+    .report-filter-bar .form-group {
+      margin-bottom: 0;
+      min-width: 160px;
+    }
+
+    /* প্রিন্ট হেডারের লুকানো অংশ (সাধারণ স্ক্রিনে দেখাবে না) */
+    .print-header {
+      display: none;
+      margin-bottom: 24px;
+      border-bottom: 2px solid #000;
+      padding-bottom: 12px;
+    }
+    .print-header h1 {
+      margin: 0;
+      font-size: 24px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .print-header h2 {
+      margin: 6px 0;
+      font-size: 18px;
+      color: #333;
+    }
+    .print-header p {
+      margin: 4px 0 0;
+      font-size: 13px;
+      color: #555;
+    }
+
+    /* বোল্ড টোটাল রো হাইলাইট */
+    .total-row {
+      font-weight: 800;
+      background-color: #f1f5f9 !important;
+      border-top: 2px solid #334155 !important;
+      border-bottom: 2px solid #334155 !important;
+    }
+    .total-row td {
+      color: #0f172a !important;
+      font-size: 14px;
+    }
+
+    /* ডেইলির জন্য টোটাল ডিউ হাইলাইট কার্ড */
+    .due-stat-banner {
+      background: #fff7ed;
+      border: 1px solid #fed7aa;
+      border-left: 4px solid var(--warning);
+      padding: 14px 20px;
+      border-radius: var(--radius);
+      margin-bottom: 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .due-stat-banner strong {
+      font-size: 18px;
+      color: #c2410c;
+    }
+
+    /* ফাঁকা ডেটা বার্তা */
+    .no-data-msg {
+      text-align: center;
+      padding: 32px 16px;
+      color: var(--text-light);
+      font-style: italic;
+    }
+
+    /* @media print রুলস: প্রিন্ট করার সময় শুধু রিপোর্ট থাকবে */
+    @media print {
+      body {
+        background: #fff !important;
+        color: #000 !important;
+        padding: 0 !important;
+      }
+      .layout {
+        display: block !important;
+      }
+      .sidebar,
+      .page-header,
+      .tab-bar,
+      .report-filter-bar,
+      .btn,
+      #alertBox {
+        display: none !important;
+      }
+      .main-content {
+        padding: 0 !important;
+        margin: 0 !important;
+      }
+      .card {
+        border: none !important;
+        box-shadow: none !important;
+        padding: 0 !important;
+        background: transparent !important;
+      }
+      .print-header {
+        display: block !important;
+      }
+      .table-scroll {
+        overflow: visible !important;
+      }
+      table {
+        border-collapse: collapse !important;
+        width: 100% !important;
+      }
+      th, td {
+        border: 1px solid #333 !important;
+        padding: 6px 10px !important;
+        color: #000 !important;
+      }
+      .total-row {
+        background-color: #eee !important;
+      }
+      .badge {
+        border: 1px solid #333 !important;
+        background: transparent !important;
+        color: #000 !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="layout">
+    <!-- বাঁদিকের গ্লোবাল সাইডবার -->
+    <aside id="sidebar" class="sidebar"></aside>
+
+    <!-- মূল কনটেন্ট এলাকা -->
+    <main class="main-content">
+      
+      <!-- অনস্ক্রিন পেজ হেডার -->
+      <div class="page-header">
+        <h1 class="page-title">📊 Financial & Operational Reports</h1>
+        <p class="page-desc">Audit hospital revenue collections, track patient footfall, and review doctor/lab performance.</p>
+      </div>
+
+      <!-- প্রিন্টের সময় দেখানোর বিশেষ অফিশিয়াল হেডার -->
+      <div class="print-header">
+        <h1>Shanti Care Hospital</h1>
+        <h2 id="printReportTitle">Hospital Report</h2>
+        <p id="printDateRange">Period: All Dates</p>
+        <p style="font-size:11px; margin-top:2px;">Printed on: <span id="printGeneratedOn"></span></p>
+      </div>
+
+      <!-- ট্যাব মেনু (চারটি রিপোর্ট) -->
+      <nav class="tab-bar" role="tablist">
+        <button type="button" class="tab-btn active" id="tabBtn-daily" onclick="switchTab('daily')">
+          💵 Daily Collection
+        </button>
+        <button type="button" class="tab-btn" id="tabBtn-patients" onclick="switchTab('patients')">
+          👥 Patient Registration List
+        </button>
+        <button type="button" class="tab-btn" id="tabBtn-doctors" onclick="switchTab('doctors')">
+          👨‍⚕️ Doctor-wise Visits & Fees
+        </button>
+        <button type="button" class="tab-btn" id="tabBtn-lab" onclick="switchTab('lab')">
+          🧪 Lab Tests Summary
+        </button>
+      </nav>
+
+      <!-- ফিল্টার টুলবার (তারিখ সিলেকশন ও প্রিন্ট বাটন) -->
+      <div class="report-filter-bar">
+        <div class="form-group">
+          <label for="fromDate">From Date:</label>
+          <input type="date" id="fromDate" onchange="runCurrentReport()">
+        </div>
+
+        <div class="form-group">
+          <label for="toDate">To Date:</label>
+          <input type="date" id="toDate" onchange="runCurrentReport()">
+        </div>
+
+        <div>
+          <button type="button" class="btn btn-primary" onclick="runCurrentReport()">
+            Show Report
+          </button>
+        </div>
+
+        <div style="margin-left: auto;">
+          <button type="button" class="btn btn-secondary" onclick="triggerPrint()">
+            🖨️ Print Report
+          </button>
+        </div>
+      </div>
+
+      <!-- রিপোর্ট কনটেন্ট কার্ড -->
+      <div class="card" id="reportDisplayCard">
+        <div id="reportContainer">
+          <!-- ডায়নামিক জাভাস্ক্রিপ্ট দিয়ে এখানে টেবিল ও ডেটা তৈরি হবে -->
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- প্রয়োজনীয় জাভাস্ক্রিপ্ট ফাইলগুলো লোড করা -->
+  <script src="db.js"></script>
+  <script src="reports.js"></script>
+  <script>
+    // কোন ট্যাব এখন সক্রিয় রয়েছে তা ট্র্যাক করা
+    let activeTab = 'daily';
+
+    // পেজ লোড হলে সাইডবার এবং রিপোর্ট শুরু হবে
+    document.addEventListener('DOMContentLoaded', function() {
+      // সাইডবার দেখানো
+      renderSidebar('reports');
+
+      // তারিখ ইনিশিয়ালাইজেশন: চলতি মাসের ১ তারিখ থেকে আজ পর্যন্ত
+      document.getElementById('fromDate').value = monthStartStr();
+      document.getElementById('toDate').value = todayStr();
+
+      // পূর্বে নির্বাচন করা ট্যাব থাকলে সেটি ফিরিয়ে আনা (localStorage থেকে)
+      const savedTab = localStorage.getItem('hms_activeReportTab');
+      if (savedTab && ['daily', 'patients', 'doctors', 'lab'].includes(savedTab)) {
+        activeTab = savedTab;
+      }
+
+      // সক্রিয় ট্যাবের বোতামে active ক্লাস দেওয়া
+      updateTabButtons();
+
+      // রিপোর্ট প্রদর্শন করা
+      runCurrentReport();
+    });
+
+    /**
+     * ট্যাব পরিবর্তন করা এবং আগের পছন্দ মনে রাখা
+     */
+    function switchTab(tabKey) {
+      activeTab = tabKey;
+      localStorage.setItem('hms_activeReportTab', tabKey);
+      updateTabButtons();
+      runCurrentReport();
+    }
+
+    /**
+     * ট্যাবের বাটনের রং হালনাগাদ করা
+     */
+    function updateTabButtons() {
+      ['daily', 'patients', 'doctors', 'lab'].forEach(t => {
+        const btn = document.getElementById('tabBtn-' + t);
+        if (btn) {
+          if (t === activeTab) {
+            btn.classList.add('active');
+          } else {
+            btn.classList.remove('active');
+          }
+        }
+      });
+    }
+
+    /**
+     * বর্তমান অ্যাক্টিভ ট্যাবের রিপোর্ট রান করা
+     */
+    function runCurrentReport() {
+      const from = document.getElementById('fromDate').value;
+      const to = document.getElementById('toDate').value;
+      const container = document.getElementById('reportContainer');
+
+      // প্রিন্ট হেডারের শিরোনাম ও তথ্য সেট করা
+      updatePrintHeader(from, to);
+
+      if (!from || !to) {
+        container.innerHTML = '<div class="alert alert-danger">Please choose both From and To dates.</div>';
+        return;
+      }
+
+      // তারিখ উল্টো হলে সংশোধন
+      if (from > to) {
+        container.innerHTML = '<div class="alert alert-danger">"From Date" cannot be after "To Date"!</div>';
+        return;
+      }
+
+      // সক্রিয় ট্যাব অনুযায়ী নির্দিষ্ট রিপোর্ট রেন্ডার
+      switch (activeTab) {
+        case 'daily':
+          renderDailyCollectionTab(from, to, container);
+          break;
+        case 'patients':
+          renderPatientsTab(from, to, container);
+          break;
+        case 'doctors':
+          renderDoctorTab(from, to, container);
+          break;
+        case 'lab':
+          renderLabTab(from, to, container);
+          break;
+      }
+    }
+
+    /**
+     * প্রিন্ট হেডারের জন্য লেখা সেট করা
+     */
+    function updatePrintHeader(from, to) {
+      const titleElem = document.getElementById('printReportTitle');
+      const rangeElem = document.getElementById('printDateRange');
+      const genElem = document.getElementById('printGeneratedOn');
+
+      const titles = {
+        daily: 'Daily Revenue Collection Audit',
+        patients: 'Patient Registration Directory',
+        doctors: 'Doctor-wise Consultation & Fee Analysis',
+        lab: 'Diagnostic Pathology & Lab Investigation Summary'
+      };
+
+      if (titleElem) titleElem.textContent = titles[activeTab] || 'Hospital Management Report';
+      if (rangeElem) rangeElem.textContent = `Date Range: ${formatDate(from)} to ${formatDate(to)}`;
+      if (genElem) genElem.textContent = new Date().toLocaleString();
+    }
+
+    /**
+     * ১. Daily Collection রিপোর্ট
+     */
+    function renderDailyCollectionTab(from, to, container) {
+      // reports.js-এর pure calculation ফাংশন কল
+      const data = getDailyCollection(from, to);
+
+      let html = `
+        <div class="due-stat-banner">
+          <div>
+            <span style="font-size:14px; color:#9a3412;">Current Hospital-wide Unpaid Balance:</span><br>
+            <strong style="font-size:20px;">Total Unpaid Due: ${formatMoney(data.totalDue)}</strong>
+          </div>
+          <div style="font-size:13px; color:#78350f;">
+            Note: All-time outstanding due across all patients (not limited by date filter).
+          </div>
+        </div>
+
+        <h3 style="margin-top:0; font-size:16px;">Daily Payment Breakdown</h3>
+      `;
+
+      if (data.rows.length === 0) {
+        html += `<div class="no-data-msg">No collection records found for this date range.</div>`;
+        container.innerHTML = html;
+        return;
+      }
+
+      html += `
+        <div class="table-scroll">
+          <table>
+            <thead>
+              <tr>
+                <th>Payment Date</th>
+                <th style="text-align: right;">Doctor Visit Collection</th>
+                <th style="text-align: right;">Lab Test Collection</th>
+                <th style="text-align: right;">Total Received</th>
+              </tr>
+            </thead>
+            <tbody>
+      `;
+
+      data.rows.forEach(r => {
+        html += `
+          <tr>
+            <td><strong>${formatDate(r.date)}</strong> (${r.date})</td>
+            <td style="text-align: right;">${formatMoney(r.visits)}</td>
+            <td style="text-align: right;">${formatMoney(r.lab)}</td>
+            <td style="text-align: right; font-weight:700; color:var(--primary);">${formatMoney(r.total)}</td>
+          </tr>
+        `;
+      });
+
+      // বোল্ড টোটাল রো (নিচে)
+      html += `
+            </tbody>
+            <tfoot>
+              <tr class="total-row">
+                <td>GRAND TOTAL (${data.rows.length} active day${data.rows.length === 1 ? '' : 's'})</td>
+                <td style="text-align: right;">${formatMoney(data.totalVisits)}</td>
+                <td style="text-align: right;">${formatMoney(data.totalLab)}</td>
+                <td style="text-align: right; color:var(--success); font-size:15px;">${formatMoney(data.totalReceived)}</td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+      `;
+
+      container.innerHTML = html;
+    }
+
+    /**
+     * ২. Patient Registration List রিপোর্ট
+     */
+    function renderPatientsTab(from, to, container) {
+      const data = getPatientsInRange(from, to);
+
+      let html = `
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+          <h3 style="margin:0; font-size:16px;">Registered Patients Directory</h3>
+          <span class="badge badge-info" style="font-size:13px;">Total Registered: ${data.count}</span>
+        </div>
+      `;
+
+      if (data.rows.length === 0) {
+        html += `<div class="no-data-msg">No patients were registered in this date range.</div>`;
+        container.innerHTML = html;
+        return;
+      }
+
+      html += `
+        <div class="table-scroll">
+          <table>
+            <thead>
+              <tr>
+                <th>Patient ID</th>
+                <th>Registration Date</th>
+                <th>Full Name</th>
+                <th>Age / Sex</th>
+                <th>Phone Number</th>
+                <th>Address</th>
+              </tr>
+            </thead>
+            <tbody>
+      `;
+
+      data.rows.forEach(p => {
+        html += `
+          <tr>
+            <td><strong>${p.id}</strong></td>
+            <td>${formatDate(p.regDate)}</td>
+            <td><strong>${escapeHtml(p.name)}</strong></td>
+            <td>${p.age} yrs / ${escapeHtml(p.sex)}</td>
+            <td>${escapeHtml(p.phone || 'N/A')}</td>
+            <td>${escapeHtml(p.address || 'N/A')}</td>
+          </tr>
+        `;
+      });
+
+      html += `
+            </tbody>
+            <tfoot>
+              <tr class="total-row">
+                <td colspan="6" style="text-align: right;">TOTAL PATIENTS REGISTERED: <strong>${data.count}</strong></td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+      `;
+
+      container.innerHTML = html;
+    }
+
+    /**
+     * ৩. Doctor-wise Visits & Fees রিপোর্ট
+     */
+    function renderDoctorTab(from, to, container) {
+      const data = getDoctorReport(from, to);
+
+      let html = `
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+          <h3 style="margin:0; font-size:16px;">Doctor Consultations & Invoiced Fees</h3>
+          <span style="font-size:13px; color:var(--text-light);">Based on visit consultation dates</span>
+        </div>
+      `;
+
+      if (data.rows.length === 0) {
+        html += `<div class="no-data-msg">No doctor consultations recorded in this date range.</div>`;
+        container.innerHTML = html;
+        return;
+      }
+
+      html += `
+        <div class="table-scroll">
+          <table>
+            <thead>
+              <tr>
+                <th>Doctor ID</th>
+                <th>Doctor Name</th>
+                <th>Specialization / Dept</th>
+                <th style="text-align: center;">Total Visits</th>
+                <th style="text-align: right;">Total Fees Invoiced</th>
+              </tr>
+            </thead>
+            <tbody>
+      `;
+
+      data.rows.forEach(d => {
+        html += `
+          <tr>
+            <td><strong>${d.doctorId}</strong></td>
+            <td><strong>${escapeHtml(d.name)}</strong></td>
+            <td>${escapeHtml(d.department)}</td>
+            <td style="text-align: center; font-weight:700;">${d.visits}</td>
+            <td style="text-align: right; font-weight:700; color:var(--primary);">${formatMoney(d.fees)}</td>
+          </tr>
+        `;
+      });
+
+      html += `
+            </tbody>
+            <tfoot>
+              <tr class="total-row">
+                <td colspan="3">GRAND TOTAL (${data.rows.length} Doctors)</td>
+                <td style="text-align: center; font-size:15px;">${data.totalVisits}</td>
+                <td style="text-align: right; color:var(--success); font-size:15px;">${formatMoney(data.totalFees)}</td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+      `;
+
+      container.innerHTML = html;
+    }
+
+    /**
+     * ৪. Lab Tests Summary রিপোর্ট
+     */
+    function renderLabTab(from, to, container) {
+      const data = getLabReport(from, to);
+
+      let html = `
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+          <h3 style="margin:0; font-size:16px;">Diagnostic Lab Test Orders & Investigation Value</h3>
+          <span style="font-size:13px; color:var(--text-light);">Based on order placement dates</span>
+        </div>
+      `;
+
+      if (data.rows.length === 0) {
+        html += `<div class="no-data-msg">No diagnostic orders placed within this date range.</div>`;
+        container.innerHTML = html;
+        return;
+      }
+
+      html += `
+        <div class="table-scroll">
+          <table>
+            <thead>
+              <tr>
+                <th>Test Name</th>
+                <th style="text-align: center;">Total Ordered</th>
+                <th style="text-align: center;">Done (Complete)</th>
+                <th style="text-align: center;">Pending Analysis</th>
+                <th style="text-align: right;">Total Amount</th>
+              </tr>
+            </thead>
+            <tbody>
+      `;
+
+      data.rows.forEach(l => {
+        html += `
+          <tr>
+            <td><strong>${escapeHtml(l.testName)}</strong></td>
+            <td style="text-align: center; font-weight:700;">${l.ordered}</td>
+            <td style="text-align: center;"><span class="badge badge-success">${l.done}</span></td>
+            <td style="text-align: center;"><span class="badge badge-warning">${l.pending}</span></td>
+            <td style="text-align: right; font-weight:700; color:var(--primary);">${formatMoney(l.amount)}</td>
+          </tr>
+        `;
+      });
+
+      html += `
+            </tbody>
+            <tfoot>
+              <tr class="total-row">
+                <td>GRAND TOTAL (${data.rows.length} Tests)</td>
+                <td style="text-align: center; font-size:15px;">${data.totalOrdered}</td>
+                <td style="text-align: center;">${data.totalDone}</td>
+                <td style="text-align: center;">${data.totalPending}</td>
+                <td style="text-align: right; color:var(--success); font-size:15px;">${formatMoney(data.totalAmount)}</td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+      `;
+
+      container.innerHTML = html;
+    }
+
+    /**
+     * ব্রাউজারের প্রিন্ট ডায়ালগ চালু করা
+     */
+    function triggerPrint() {
+      window.print();
+    }
+  </script>
+  <script src="polish.js"></script>
+</body>
+</html>

@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Patients Directory - Shanti Care Hospital</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app-layout">
+    <!-- বাম পাশের সাইডবার -->
+    <aside id="sidebar" class="sidebar"></aside>
+
+    <!-- মূল কনটেন্ট -->
+    <main class="main-content">
+      <div class="page-header">
+        <h1 class="page-title">Patient Management</h1>
+        <p class="page-subtitle">Register new patients and look up existing medical profiles</p>
+      </div>
+
+      <!-- সফল রেজিস্ট্রেশন বার্তা -->
+      <div id="patientAlert" class="alert alert-success" style="display: none;"></div>
+
+      <!-- নতুন রোগী যোগ করার ফর্ম -->
+      <section class="card mb-4">
+        <div class="card-header">
+          <h2 class="card-title">Register New Patient</h2>
+        </div>
+        <div class="card-body">
+          <form id="patientForm" novalidate>
+            <div class="grid grid-3">
+              <!-- রোগীর নাম -->
+              <div class="form-group">
+                <label class="form-label" for="patientName">Full Name *</label>
+                <input type="text" id="patientName" class="form-control" placeholder="e.g. Mohammad Rahim" required>
+                <div id="nameError" class="form-error">Patient name is required.</div>
+              </div>
+
+              <!-- বয়স -->
+              <div class="form-group">
+                <label class="form-label" for="patientAge">Age (Years) *</label>
+                <input type="number" id="patientAge" class="form-control" min="0" max="120" placeholder="e.g. 35" required>
+                <div id="ageError" class="form-error">Please enter a valid age between 0 and 120.</div>
+              </div>
+
+              <!-- লিঙ্গ -->
+              <div class="form-group">
+                <label class="form-label" for="patientSex">Sex *</label>
+                <select id="patientSex" class="form-control" required>
+                  <option value="Male">Male</option>
+                  <option value="Female">Female</option>
+                  <option value="Other">Other</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="grid grid-2 mt-2">
+              <!-- ফোন নম্বর -->
+              <div class="form-group">
+                <label class="form-label" for="patientPhone">Phone Number *</label>
+                <input type="tel" id="patientPhone" class="form-control" placeholder="e.g. 01712345678" required>
+                <div id="phoneError" class="form-error">A valid phone number is required.</div>
+              </div>
+
+              <!-- ঠিকানা -->
+              <div class="form-group">
+                <label class="form-label" for="patientAddress">Address / Area</label>
+                <input type="text" id="patientAddress" class="form-control" placeholder="e.g. Mirpur-10, Dhaka">
+              </div>
+            </div>
+
+            <!-- সাবমিট বাটন -->
+            <div class="mt-3 flex justify-between items-center">
+              <span class="text-muted" style="font-size: 13px;">* Registration date will be automatically set to today.</span>
+              <button type="submit" class="btn btn-primary">
+                💾 Save Patient Profile
+              </button>
+            </div>
+          </form>
+        </div>
+      </section>
+
+      <!-- রোগীদের তালিকা ও লাইভ সার্চ বক্স -->
+      <section class="card">
+        <div class="card-header flex justify-between items-center flex-wrap gap-2">
+          <div>
+            <h2 class="card-title">Registered Patients Directory</h2>
+            <span id="patientCountBadge" class="text-muted" style="font-size: 13px;">Loading count...</span>
+          </div>
+          <!-- লাইভ সার্চ ফিল্টার ইনপুট -->
+          <div style="min-width: 280px;">
+            <input type="search" id="searchPatient" class="form-control" placeholder="🔍 Search by Name, Phone or ID (e.g. P-0001)...">
+          </div>
+        </div>
+        <div class="card-body p-0">
+          <div class="table-scroll">
+            <table class="table" id="patientsTable">
+              <thead>
+                <tr>
+                  <th>Patient ID</th>
+                  <th>Name</th>
+                  <th>Age / Sex</th>
+                  <th>Phone</th>
+                  <th>Address</th>
+                  <th>Registered</th>
+                  <th class="text-right">Outstanding Due</th>
+                </tr>
+              </thead>
+              <tbody id="patientsTableBody">
+                <!-- জাভাস্ক্রিপ্ট দিয়ে তালিকা আসবে -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- স্ক্রিপ্ট ফাইল -->
+  <script src="db.js"></script>
+  <script src="sample-data.js"></script>
+  <script>
+    // গ্লোবাল ভেরিয়েবল
+    var allPatients = [];
+
+    document.addEventListener('DOMContentLoaded', function () {
+      // সাইডবার রেন্ডার
+      renderSidebar('patients');
+
+      // রোগীদের তালিকা লোড করা
+      loadPatientsList();
+
+      // ফর্ম সাবমিট ইভেন্ট হ্যান্ডলার
+      document.getElementById('patientForm').addEventListener('submit', handlePatientSubmit);
+
+      // লাইভ সার্চ ইনপুট ইভেন্ট
+      document.getElementById('searchPatient').addEventListener('input', function (e) {
+        filterPatientsTable(e.target.value);
+      });
+    });
+
+    // রোগীদের তালিকা মেমোরিতে লোড ও টেবিল প্রদর্শন
+    function loadPatientsList() {
+      allPatients = load('hms_patients');
+      // নতুন নিবন্ধিত রোগী সবার আগে (Newest first)
+      allPatients.sort(function (a, b) {
+        if (a.regDate !== b.regDate) {
+          return b.regDate.localeCompare(a.regDate);
+        }
+        return b.id.localeCompare(a.id);
+      });
+
+      renderTableRows(allPatients);
+    }
+
+    // টেবিলের রো রেন্ডার করার ফাংশন
+    function renderTableRows(patientList) {
+      var tbody = document.getElementById('patientsTableBody');
+      var badge = document.getElementById('patientCountBadge');
+      tbody.innerHTML = '';
+
+      badge.textContent = 'Showing ' + patientList.length + ' of ' + allPatients.length + ' patients';
+
+      if (patientList.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="7" class="text-center text-muted" style="padding: 24px;">No matching patient records found.</td></tr>';
+        return;
+      }
+
+      for (var i = 0; i < patientList.length; i++) {
+        var p = patientList[i];
+        var due = getPatientDue(p.id);
+
+        var tr = document.createElement('tr');
+        var dueBadge = due > 0
+          ? '<span class="badge badge-warning">' + formatMoney(due) + '</span>'
+          : '<span class="badge badge-success">No Due</span>';
+
+        tr.innerHTML = '<td><strong>' + escapeHtml(p.id) + '</strong></td>' +
+                       '<td>' + escapeHtml(p.name) + '</td>' +
+                       '<td>' + escapeHtml(p.age) + ' yrs / ' + escapeHtml(p.sex) + '</td>' +
+                       '<td>' + escapeHtml(p.phone) + '</td>' +
+                       '<td>' + escapeHtml(p.address || '-') + '</td>' +
+                       '<td>' + formatDate(p.regDate) + '</td>' +
+                       '<td class="text-right">' + dueBadge + '</td>';
+        tbody.appendChild(tr);
+      }
+    }
+
+    // লাইভ সার্চ ফিল্টার ফাংশন (Name, Phone বা ID দিয়ে সার্চ)
+    function filterPatientsTable(query) {
+      var q = (query || '').trim().toLowerCase();
+      if (!q) {
+        renderTableRows(allPatients);
+        return;
+      }
+
+      var filtered = allPatients.filter(function (p) {
+        var matchId = (p.id || '').toLowerCase().indexOf(q) !== -1;
+        var matchName = (p.name || '').toLowerCase().indexOf(q) !== -1;
+        var matchPhone = (p.phone || '').toLowerCase().indexOf(q) !== -1;
+        var matchAddress = (p.address || '').toLowerCase().indexOf(q) !== -1;
+        return matchId || matchName || matchPhone || matchAddress;
+      });
+
+      renderTableRows(filtered);
+    }
+
+    // ফর্ম সাবমিশন এবং ভ্যালিডেশন হ্যান্ডলার
+    function handlePatientSubmit(event) {
+      event.preventDefault();
+
+      // ইনপুট ভ্যালু নেওয়া
+      var nameInput = document.getElementById('patientName');
+      var ageInput = document.getElementById('patientAge');
+      var sexSelect = document.getElementById('patientSex');
+      var phoneInput = document.getElementById('patientPhone');
+      var addressInput = document.getElementById('patientAddress');
+
+      var name = nameInput.value.trim();
+      var age = parseInt(ageInput.value, 10);
+      var sex = sexSelect.value;
+      var phone = phoneInput.value.trim();
+      var address = addressInput.value.trim();
+
+      // এরর মেসেজ রিসেট
+      document.getElementById('nameError').style.display = 'none';
+      document.getElementById('ageError').style.display = 'none';
+      document.getElementById('phoneError').style.display = 'none';
+
+      var hasError = false;
+
+      if (!name) {
+        document.getElementById('nameError').style.display = 'block';
+        hasError = true;
+      }
+
+      if (isNaN(age) || age < 0 || age > 120) {
+        document.getElementById('ageError').style.display = 'block';
+        hasError = true;
+      }
+
+      if (!phone) {
+        document.getElementById('phoneError').style.display = 'block';
+        hasError = true;
+      }
+
+      if (hasError) return;
+
+      // db.js এর addPatient ফাংশন দিয়ে নতুন রোগী সেভ করা
+      var newPatient = addPatient({
+        name: name,
+        age: age,
+        sex: sex,
+        phone: phone,
+        address: address,
+        regDate: todayStr()
+      });
+
+      // ফর্ম ক্লিয়ার করা
+      document.getElementById('patientForm').reset();
+
+      // সাফল্য বার্তা প্রদর্শন
+      var alertBox = document.getElementById('patientAlert');
+      alertBox.textContent = '✅ Patient registered successfully! Assigned ID: ' + newPatient.id + ' (' + newPatient.name + ')';
+      alertBox.style.display = 'block';
+
+      // ৩ সেকেন্ড পর সাফল্য বার্তা মিলিয়ে যাওয়া
+      setTimeout(function () {
+        alertBox.style.display = 'none';
+      }, 5000);
+
+      // টেবিল রিফ্রেশ করা
+      loadPatientsList();
+
+      // সার্চ বক্স ক্লিয়ার থাকলে পুরো নতুন তালিকাই দেখাবে
+      document.getElementById('searchPatient').value = '';
+    }
+  </script>
+  <script src="polish.js"></script>
+</body>
+</html>

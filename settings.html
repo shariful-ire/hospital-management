@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Settings — Shanti Care Hospital</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    :root { --settings-accent: #0f9f9a; }
+    body { background: var(--bg, #f1f5f9); }
+    .settings-page { max-width: 1180px; margin: 0 auto; }
+    .settings-hero { display:flex; justify-content:space-between; align-items:flex-end; gap:20px; padding:24px 26px; margin-bottom:22px; border:1px solid var(--border); border-radius:18px; background:linear-gradient(120deg,#0b253a 0%,#0e5360 62%,#0f9f9a 100%); color:#fff; box-shadow:0 14px 34px rgba(12,61,78,.18); }
+    .settings-hero h1 { color:#fff; font-size:clamp(24px,3vw,32px); margin:0 0 6px; letter-spacing:-.03em; }
+    .settings-hero p { color:#d9f4f2; margin:0; max-width:650px; }
+    .hero-mark { width:58px; height:58px; flex:0 0 58px; display:grid; place-items:center; border-radius:18px; background:rgba(255,255,255,.16); font-size:28px; border:1px solid rgba(255,255,255,.22); }
+    .settings-layout { display:grid; grid-template-columns:minmax(0,1.55fr) minmax(280px,.85fr); gap:20px; align-items:start; }
+    .settings-stack { display:grid; gap:18px; }
+    .settings-card { background:var(--card,#fff); border:1px solid var(--border); border-radius:15px; padding:22px; box-shadow:var(--shadow-sm,0 2px 10px rgba(15,23,42,.05)); }
+    .settings-card h2 { margin:0; font-size:17px; }
+    .card-heading { display:flex; justify-content:space-between; align-items:flex-start; gap:14px; margin-bottom:7px; }
+    .card-kicker { color:var(--text-muted); font-size:13px; margin:0 0 18px; }
+    .section-icon { width:38px; height:38px; flex:0 0 38px; display:grid; place-items:center; border-radius:12px; background:#e8f7f6; color:#087e79; font-size:18px; }
+    .settings-form-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+    .settings-field { display:flex; flex-direction:column; gap:6px; }
+    .settings-field.full { grid-column:1/-1; }
+    .settings-field label { font-size:12px; color:var(--text-muted); font-weight:700; letter-spacing:.025em; }
+    .settings-field input, .settings-field textarea { width:100%; min-width:0; padding:10px 12px; font:inherit; color:var(--text-main,var(--text)); background:var(--card,#fff); border:1px solid var(--border); border-radius:9px; }
+    .settings-field textarea { resize:vertical; }
+    .actions { display:flex; flex-wrap:wrap; gap:9px; margin-top:16px; }
+    .status-line { min-height:22px; margin-top:12px; color:var(--text-muted); font-size:13px; }
+    .status-line.success { color:#15803d; } .status-line.error { color:#b91c1c; }
+    .connection-pill { display:inline-flex; align-items:center; gap:7px; padding:6px 10px; border-radius:999px; background:#f1f5f9; color:#475569; font-size:12px; font-weight:700; white-space:nowrap; }
+    .connection-pill::before { content:""; width:8px; height:8px; border-radius:50%; background:#94a3b8; }
+    .connection-pill.connected { background:#ecfdf5; color:#166534; }
+    .connection-pill.connected::before { background:#22c55e; box-shadow:0 0 0 3px #bbf7d0; }
+    .connection-pill.offline { background:#fef2f2; color:#991b1b; }
+    .connection-pill.offline::before { background:#ef4444; }
+    .theme-options { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px; }
+    .theme-choice { text-align:left; border:1px solid var(--border); background:var(--card,#fff); border-radius:12px; padding:12px; cursor:pointer; transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease; color:var(--text-main,var(--text)); }
+    .theme-choice:hover { transform:translateY(-2px); box-shadow:var(--shadow); }
+    .theme-choice[aria-pressed="true"] { border-color:#0f9f9a; box-shadow:0 0 0 3px rgba(15,159,154,.13); }
+    .theme-swatch { display:flex; height:35px; overflow:hidden; border-radius:8px; margin-bottom:9px; border:1px solid rgba(15,23,42,.08); }
+    .theme-swatch i { flex:1; }
+    .theme-choice strong { display:block; font-size:12px; }
+    .theme-choice small { display:block; color:var(--text-muted); font-size:10px; margin-top:2px; }
+    .storage-summary { display:flex; justify-content:space-between; align-items:center; gap:12px; margin:14px 0 8px; }
+    .storage-number { font-size:23px; font-weight:800; letter-spacing:-.03em; }
+    .storage-track { width:100%; height:8px; background:#e2e8f0; border-radius:99px; overflow:hidden; }
+    .storage-fill { height:100%; width:0; background:linear-gradient(90deg,#0f9f9a,#38bdf8); border-radius:inherit; transition:width .25s ease; }
+    .record-list { display:grid; grid-template-columns:1fr 1fr; gap:7px 12px; margin:16px 0 0; }
+    .record-item { display:flex; justify-content:space-between; gap:8px; padding:8px 0; border-bottom:1px solid var(--border); font-size:12px; color:var(--text-muted); }
+    .record-item strong { color:var(--text-main,var(--text)); }
+    .notice { padding:12px 14px; border-radius:10px; background:#fffbeb; border:1px solid #fde68a; color:#854d0e; font-size:12px; line-height:1.55; margin-top:14px; }
+    .security-note { color:var(--text-muted); font-size:12px; line-height:1.6; margin:12px 0 0; }
+    .backup-actions { display:grid; gap:9px; }
+    .backup-actions .btn { width:100%; }
+    .hidden-file { position:absolute; width:1px; height:1px; opacity:0; pointer-events:none; }
+    .small-label { color:var(--text-muted); font-size:11px; }
+    .divider { border:0; border-top:1px solid var(--border); margin:18px 0; }
+    .danger-zone { border-color:#fecaca; }
+    button:disabled { opacity:.58; cursor:not-allowed; transform:none!important; }
+    body[data-theme="dark-navy"] .settings-hero { box-shadow:0 14px 34px rgba(0,0,0,.3); }
+    body[data-theme="dark-navy"] .theme-swatch { border-color:#334155; }
+    body[data-theme="dark-navy"] .theme-swatch i:first-child { background:#111a2e!important; }
+    body[data-theme="dark-navy"] .theme-swatch i:nth-child(2) { background:#0b1528!important; }
+    body[data-theme="dark-navy"] .theme-swatch i:nth-child(3) { background:#38bdf8!important; }
+    @media (max-width: 768px) {
+      .container, body { padding: 20px !important; max-width: 100% !important; }
+      .row, .grid, .two-col { flex-direction: column !important; grid-template-columns: 1fr !important; }
+      h1 { font-size: 22pt !important; }
+      table { font-size: 11pt !important; }
+      .tenant-info, .info-box, .card { padding: 16px !important; }
+      .settings-layout { grid-template-columns:1fr; }
+      .settings-hero { padding:20px; align-items:flex-start; }
+      .settings-form-grid { grid-template-columns:1fr; }
+      .settings-field.full { grid-column:auto; }
+      .theme-options { grid-template-columns:1fr; }
+      .theme-choice { display:grid; grid-template-columns:72px 1fr; column-gap:10px; align-items:center; }
+      .theme-swatch { grid-row:span 2; margin:0; }
+      .record-list { grid-template-columns:1fr; }
+      .settings-card { padding:16px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-layout">
+    <aside id="sidebar" class="sidebar"></aside>
+    <main class="main-content">
+      <div class="settings-page">
+        <header class="settings-hero">
+          <div>
+            <h1>Workspace settings</h1>
+            <p>Personalise the hospital workspace, manage the AI connection, and protect your local demo data.</p>
+          </div>
+          <div class="hero-mark" aria-hidden="true">⚙️</div>
+        </header>
+
+        <div class="settings-layout">
+          <div class="settings-stack">
+            <section class="settings-card" aria-labelledby="profileTitle">
+              <div class="card-heading"><div><h2 id="profileTitle">Hospital profile</h2></div><span class="section-icon" aria-hidden="true">🏥</span></div>
+              <p class="card-kicker">These details are saved in this browser for workspace reference.</p>
+              <form id="profileForm">
+                <div class="settings-form-grid">
+                  <div class="settings-field full"><label for="hospitalName">Hospital name</label><input id="hospitalName" name="hospitalName" type="text" maxlength="100" autocomplete="organization" value="Shanti Care Hospital"></div>
+                  <div class="settings-field"><label for="hospitalPhone">Helpline</label><input id="hospitalPhone" name="hospitalPhone" type="tel" maxlength="30" placeholder="e.g. 02-1234567"></div>
+                  <div class="settings-field"><label for="hospitalEmail">Contact email</label><input id="hospitalEmail" name="hospitalEmail" type="email" maxlength="120" placeholder="care@example.com"></div>
+                  <div class="settings-field full"><label for="hospitalAddress">Address</label><textarea id="hospitalAddress" name="hospitalAddress" rows="2" maxlength="240" placeholder="Hospital address"></textarea></div>
+                  <div class="settings-field full"><label for="receiptFooter">Receipt footer message</label><input id="receiptFooter" name="receiptFooter" type="text" maxlength="140" placeholder="Thank you for choosing our hospital."></div>
+                </div>
+                <div class="actions"><button class="btn btn-primary" type="submit">Save profile</button><button class="btn btn-secondary" type="button" id="resetProfile">Reset fields</button></div>
+                <div class="status-line" id="profileStatus" role="status" aria-live="polite"></div>
+              </form>
+            </section>
+
+            <section class="settings-card" aria-labelledby="themeTitle">
+              <div class="card-heading"><div><h2 id="themeTitle">Appearance</h2></div><span class="section-icon" aria-hidden="true">🎨</span></div>
+              <p class="card-kicker">Choose a visual style for this browser. Your choice is remembered on this device.</p>
+              <div class="theme-options" role="group" aria-label="Choose theme">
+                <button type="button" class="theme-choice" data-theme-choice="blue" aria-pressed="false"><span class="theme-swatch"><i style="background:#f8fafc"></i><i style="background:#0f2a4d"></i><i style="background:#2563eb"></i></span><strong>Hospital Blue</strong><small>Clean and familiar</small></button>
+                <button type="button" class="theme-choice" data-theme-choice="emerald" aria-pressed="false"><span class="theme-swatch"><i style="background:#f2faf8"></i><i style="background:#102c2b"></i><i style="background:#059669"></i></span><strong>Care Teal</strong><small>Calm and clinical</small></button>
+                <button type="button" class="theme-choice" data-theme-choice="dark-navy" aria-pressed="false"><span class="theme-swatch"><i style="background:#111a2e"></i><i style="background:#0b1528"></i><i style="background:#38bdf8"></i></span><strong>Midnight</strong><small>Low-light workspace</small></button>
+              </div>
+              <p class="small-label" style="margin:12px 0 0">Theme applies to pages that use the shared stylesheet.</p>
+            </section>
+
+            <section class="settings-card" aria-labelledby="aiTitle">
+              <div class="card-heading"><div><h2 id="aiTitle">AI report assistant</h2></div><span class="connection-pill" id="connectionState">Checking</span></div>
+              <p class="card-kicker">Connect your ChatterMate API key to enable report questions. The key is sent to the local server and is not saved in browser storage.</p>
+              <form id="aiForm" autocomplete="off">
+                <div class="settings-field"><label for="apiKeyInput">ChatterMate API key</label><input id="apiKeyInput" name="apiKey" type="password" placeholder="Paste API key to connect or replace" autocomplete="new-password"></div>
+                <div class="actions"><button class="btn btn-primary" id="connectButton" type="submit">Save &amp; connect</button><button class="btn btn-secondary" id="checkConnection" type="button">Check status</button><button class="btn btn-danger" id="disconnectButton" type="button">Disconnect</button></div>
+              </form>
+              <div class="status-line" id="aiStatus" role="status" aria-live="polite">Checking server connection…</div>
+              <p class="security-note">For this local demo, the server keeps the connected key in memory. Restarting <code>server.js</code> clears it, so reconnect after a restart.</p>
+            </section>
+          </div>
+
+          <aside class="settings-stack">
+            <section class="settings-card" aria-labelledby="storageTitle">
+              <div class="card-heading"><div><h2 id="storageTitle">Local data overview</h2></div><span class="section-icon" aria-hidden="true">💾</span></div>
+              <p class="card-kicker">Records are stored in this browser's localStorage—not in a shared hospital database.</p>
+              <div class="storage-summary"><div><div class="small-label">Approx. browser storage used</div><div class="storage-number" id="storageUsed">0 KB</div></div><span class="badge badge-info" id="recordTotal">0 records</span></div>
+              <div class="storage-track" role="progressbar" aria-label="Approximate local storage usage" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div class="storage-fill" id="storageFill"></div></div>
+              <div class="record-list" id="recordList"></div>
+              <div class="notice"><strong>Demo data only:</strong> avoid storing real patient-identifiable or clinical information in this browser-only project.</div>
+              <button type="button" class="btn btn-secondary" id="refreshStorage" style="width:100%;margin-top:14px">Refresh overview</button>
+            </section>
+
+            <section class="settings-card" aria-labelledby="backupTitle">
+              <div class="card-heading"><div><h2 id="backupTitle">Backup &amp; restore</h2></div><span class="section-icon" aria-hidden="true">📦</span></div>
+              <p class="card-kicker">Export a JSON backup or restore a previously exported Shanti Care file.</p>
+              <div class="backup-actions"><button type="button" class="btn btn-primary" id="exportBackup">⬇ Export backup</button><button type="button" class="btn btn-secondary" id="chooseRestore">⬆ Restore from backup</button><input class="hidden-file" id="restoreFile" type="file" accept=".json,application/json" aria-label="Choose a JSON backup file"></div>
+              <div class="status-line" id="backupStatus" role="status" aria-live="polite"></div>
+              <p class="security-note">Restoring replaces the current patient, visit, lab, charge, and payment data in this browser. Make a backup first.</p>
+            </section>
+
+            <section class="settings-card danger-zone" aria-labelledby="resetTitle">
+              <div class="card-heading"><div><h2 id="resetTitle">Clear local records</h2></div><span class="section-icon" style="background:#fef2f2;color:#b91c1c" aria-hidden="true">⚠️</span></div>
+              <p class="card-kicker">Permanently remove the app's hospital records from this browser. This cannot be undone.</p>
+              <button type="button" class="btn btn-danger" id="clearData" style="width:100%">Clear all hospital data</button>
+              <div class="status-line" id="clearStatus" role="status" aria-live="polite"></div>
+            </section>
+          </aside>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="db.js"></script>
+  <script>
+    (function () {
+      'use strict';
+      var DATA_KEYS = [
+        ['hms_patients', 'Patients'], ['hms_doctors', 'Doctors'], ['hms_visits', 'Visits'],
+        ['hms_labOrders', 'Lab orders'], ['hms_charges', 'Charges'], ['hms_payments', 'Payments']
+      ];
+      var PROFILE_KEY = 'hms_hospital_profile';
+      DATA_KEYS.push(['hms_settings', 'Workspace settings']);
+      var THEME_KEY = 'hms_theme';
+      var PROFILE_DEFAULTS = { hospitalName: 'Shanti Care Hospital', hospitalPhone: '', hospitalEmail: '', hospitalAddress: '', receiptFooter: '' };
+      var $ = function (id) { return document.getElementById(id); };
+
+      function safeJson(response) {
+        return response.text().then(function (text) {
+          if (!text.trim()) throw new Error('Server returned an empty response.');
+          try { return JSON.parse(text); } catch (_) { throw new Error('Server returned an invalid response.'); }
+        });
+      }
+      function setStatus(element, message, kind) {
+        element.textContent = message;
+        element.className = 'status-line' + (kind ? ' ' + kind : '');
+      }
+      function localGet(key, fallback) {
+        try { var value = localStorage.getItem(key); return value ? JSON.parse(value) : fallback; }
+        catch (_) { return fallback; }
+      }
+      function readTheme() {
+        var theme = 'blue';
+        try { theme = localStorage.getItem(THEME_KEY) || 'blue'; } catch (_) {}
+        return ['blue', 'emerald', 'dark-navy'].indexOf(theme) >= 0 ? theme : 'blue';
+      }
+      function applyTheme(theme) {
+        document.body.setAttribute('data-theme', theme === 'blue' ? '' : theme);
+        try { localStorage.setItem(THEME_KEY, theme); } catch (_) {}
+        if (typeof window.updateSettings === 'function') window.updateSettings({ appearance: { theme: theme } });
+        document.querySelectorAll('[data-theme-choice]').forEach(function (button) {
+          button.setAttribute('aria-pressed', button.getAttribute('data-theme-choice') === theme ? 'true' : 'false');
+        });
+      }
+      function loadProfile() {
+        var profile = localGet(PROFILE_KEY, {});
+        Object.keys(PROFILE_DEFAULTS).forEach(function (key) { $(key).value = profile[key] || PROFILE_DEFAULTS[key]; });
+      }
+      function saveProfile(event) {
+        event.preventDefault();
+        var profile = {};
+        Object.keys(PROFILE_DEFAULTS).forEach(function (key) { profile[key] = $(key).value.trim(); });
+        try {
+          localStorage.setItem(PROFILE_KEY, JSON.stringify(profile));
+          setStatus($('profileStatus'), 'Hospital profile saved in this browser.', 'success');
+        } catch (_) { setStatus($('profileStatus'), 'Could not save profile. Browser storage may be unavailable.', 'error'); }
+      }
+      function updateStorageOverview() {
+        var totalBytes = 0, totalRecords = 0, counts = [];
+        DATA_KEYS.forEach(function (entry) {
+          var fallback = entry[0] === 'hms_settings' ? {} : [];
+          var rows = localGet(entry[0], fallback);
+          var count = Array.isArray(rows) ? rows.length : (rows && typeof rows === 'object' ? Object.keys(rows).length : 0);
+          totalRecords += count;
+          counts.push({ label: entry[1], count: count });
+        });
+        try {
+          for (var i = 0; i < localStorage.length; i++) {
+            var key = localStorage.key(i) || '';
+            if (key.indexOf('hms_') === 0) totalBytes += (key.length + (localStorage.getItem(key) || '').length) * 2;
+          }
+        } catch (_) {}
+        var kb = totalBytes < 1024 ? totalBytes + ' B' : (totalBytes / 1024).toFixed(1) + ' KB';
+        $('storageUsed').textContent = kb;
+        $('recordTotal').textContent = totalRecords + (totalRecords === 1 ? ' record' : ' records');
+        $('recordList').innerHTML = counts.map(function (item) { return '<div class="record-item"><span>' + item.label + '</span><strong>' + item.count + '</strong></div>'; }).join('');
+        var ratio = Math.min(100, totalBytes / (5 * 1024 * 1024) * 100);
+        $('storageFill').style.width = ratio.toFixed(2) + '%';
+        $('storageFill').parentElement.setAttribute('aria-valuenow', String(Math.round(ratio)));
+      }
+      function checkConnection() {
+        var badge = $('connectionState');
+        badge.textContent = 'Checking'; badge.className = 'connection-pill';
+        return fetch('/api/settings/status', { method: 'GET', cache: 'no-store' })
+          .then(safeJson).then(function (data) {
+            var hosted = data.canConnect === false;
+            $('aiForm').style.display = hosted ? 'none' : '';
+            if (data.connected) {
+              badge.textContent = 'Connected'; badge.className = 'connection-pill connected';
+              setStatus($('aiStatus'), hosted ? 'AI is connected (key is set in the Vercel environment). The key is not displayed here.' : 'AI service is connected. The key is not displayed here.', 'success');
+            } else {
+              badge.textContent = 'Not connected'; badge.className = 'connection-pill offline';
+              setStatus($('aiStatus'), hosted ? 'No AI key is set on the server. Add CHATTERMATE_API_KEY in Vercel > Project Settings > Environment Variables, then redeploy.' : 'No AI key is connected. Add a key above to enable the assistant.', '');
+            }
+            return data;
+          }).catch(function (error) {
+            badge.textContent = 'Server unavailable'; badge.className = 'connection-pill offline';
+            setStatus($('aiStatus'), 'Could not reach server.js. Start the local server and refresh. ' + error.message, 'error');
+            return null;
+          });
+      }
+      function exportBackup() {
+        var backup = { app: 'Shanti Care Hospital', schemaVersion: 1, exportedAt: new Date().toISOString(), data: {} };
+        DATA_KEYS.forEach(function (entry) {
+          var fallback = entry[0] === 'hms_settings' ? {} : [];
+          var records = localGet(entry[0], fallback);
+          backup.data[entry[0]] = entry[0] === 'hms_settings'
+            ? (records && typeof records === 'object' && !Array.isArray(records) ? records : {})
+            : (Array.isArray(records) ? records : []);
+        });
+        backup.data[PROFILE_KEY] = localGet(PROFILE_KEY, PROFILE_DEFAULTS);
+        var blob = new Blob([JSON.stringify(backup, null, 2)], { type: 'application/json' });
+        var url = URL.createObjectURL(blob);
+        var anchor = document.createElement('a');
+        anchor.href = url;
+        anchor.download = 'shanti-care-backup-' + todayStr() + '.json';
+        document.body.appendChild(anchor); anchor.click(); anchor.remove(); URL.revokeObjectURL(url);
+        setStatus($('backupStatus'), 'Backup exported. Keep the JSON file somewhere safe.', 'success');
+      }
+      function restoreBackup(file) {
+        if (!file) return;
+        var reader = new FileReader();
+        reader.onload = function () {
+          try {
+            var backup = JSON.parse(String(reader.result || ''));
+            var data = backup && backup.data;
+            if (!data || typeof data !== 'object' || Array.isArray(data)) throw new Error('This does not look like a Shanti Care backup.');
+            DATA_KEYS.forEach(function (entry) {
+              if (entry[0] === 'hms_settings') {
+                if (data[entry[0]] !== undefined && (!data[entry[0]] || typeof data[entry[0]] !== 'object' || Array.isArray(data[entry[0]]))) throw new Error('Backup has invalid workspace settings.');
+                if (!data[entry[0]]) data[entry[0]] = {};
+              } else if (!Array.isArray(data[entry[0]])) throw new Error('Backup is missing valid ' + entry[1].toLowerCase() + ' data.');
+            });
+            if (!window.confirm('Restore this backup? Current hospital records in this browser will be replaced.')) return;
+            DATA_KEYS.forEach(function (entry) { localStorage.setItem(entry[0], JSON.stringify(data[entry[0]])); });
+            if (data[PROFILE_KEY] && typeof data[PROFILE_KEY] === 'object' && !Array.isArray(data[PROFILE_KEY])) localStorage.setItem(PROFILE_KEY, JSON.stringify(data[PROFILE_KEY]));
+            setStatus($('backupStatus'), 'Backup restored successfully. Refreshing this page…', 'success');
+            updateStorageOverview();
+            setTimeout(function () { location.reload(); }, 700);
+          } catch (error) { setStatus($('backupStatus'), error.message || 'Could not restore backup.', 'error'); }
+          finally { $('restoreFile').value = ''; }
+        };
+        reader.onerror = function () { setStatus($('backupStatus'), 'Could not read the selected file.', 'error'); };
+        reader.readAsText(file);
+      }
+      function clearHospitalData() {
+        if (!window.confirm('Delete all hospital patients, doctors, visits, lab orders, charges, and payments from this browser? This cannot be undone.')) return;
+        DATA_KEYS.forEach(function (entry) { localStorage.removeItem(entry[0]); });
+        updateStorageOverview();
+        setStatus($('clearStatus'), 'Hospital records cleared from this browser.', 'success');
+      }
+
+      document.addEventListener('DOMContentLoaded', function () {
+        if (typeof window.renderSidebar === 'function') window.renderSidebar('settings');
+        applyTheme(readTheme());
+        loadProfile();
+        updateStorageOverview();
+        checkConnection();
+
+        $('profileForm').addEventListener('submit', saveProfile);
+        $('resetProfile').addEventListener('click', function () { loadProfile(); setStatus($('profileStatus'), 'Showing the saved profile values.', ''); });
+        document.querySelectorAll('[data-theme-choice]').forEach(function (button) {
+          button.addEventListener('click', function () { applyTheme(button.getAttribute('data-theme-choice')); });
+        });
+        $('refreshStorage').addEventListener('click', updateStorageOverview);
+        $('exportBackup').addEventListener('click', exportBackup);
+        $('chooseRestore').addEventListener('click', function () { $('restoreFile').click(); });
+        $('restoreFile').addEventListener('change', function (event) { restoreBackup(event.target.files && event.target.files[0]); });
+        $('clearData').addEventListener('click', clearHospitalData);
+        $('checkConnection').addEventListener('click', checkConnection);
+
+        $('aiForm').addEventListener('submit', function (event) {
+          event.preventDefault();
+          var key = $('apiKeyInput').value.trim();
+          if (!key) { setStatus($('aiStatus'), 'Enter an API key before connecting.', 'error'); $('apiKeyInput').focus(); return; }
+          $('connectButton').disabled = true;
+          setStatus($('aiStatus'), 'Validating key with ChatterMate…', '');
+          fetch('/api/settings/connect', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ apiKey: key }) })
+            .then(safeJson).then(function (result) {
+              if (result.error) throw new Error(result.error);
+              $('apiKeyInput').value = '';
+              $('connectionState').textContent = 'Connected'; $('connectionState').className = 'connection-pill connected';
+              setStatus($('aiStatus'), result.message || 'Connected successfully. The server holds the key in memory.', 'success');
+            }).catch(function (error) { setStatus($('aiStatus'), error.message || 'Could not connect.', 'error'); })
+            .finally(function () { $('connectButton').disabled = false; });
+        });
+        $('disconnectButton').addEventListener('click', function () {
+          $('disconnectButton').disabled = true;
+          fetch('/api/settings/disconnect', { method: 'POST' }).then(safeJson).then(function (result) {
+            if (result.error) throw new Error(result.error);
+            $('connectionState').textContent = 'Not connected'; $('connectionState').className = 'connection-pill offline';
+            setStatus($('aiStatus'), result.message || 'Disconnected. Server key cleared from memory.', 'success');
+          }).catch(function (error) { setStatus($('aiStatus'), error.message || 'Could not disconnect.', 'error'); })
+            .finally(function () { $('disconnectButton').disabled = false; });
+        });
+      });
+    })();
+  </script>
+  <script src="polish.js"></script>
+</body>
+</html>

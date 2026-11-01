@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard - Shanti Care Hospital</title>
+  <!-- আমাদের সাধারণ স্টাইলশিট লিংক করা হলো -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app-layout">
+    <!-- বাম পাশের সাইডবার (db.js এর renderSidebar ফাংশন দিয়ে নিজে থেকেই পূরণ হবে) -->
+    <aside id="sidebar" class="sidebar"></aside>
+
+    <!-- মূল কনটেন্ট এলাকা -->
+    <main class="main-content">
+      <!-- পেজের শিরোনাম এবং বাটন গ্রুপ -->
+      <div class="page-header flex justify-between items-center flex-wrap gap-2">
+        <div>
+          <h1 class="page-title">Hospital Dashboard</h1>
+          <p class="page-subtitle">Welcome to Shanti Care Hospital Management System</p>
+        </div>
+        <!-- ডেমো ডেটা লোড এবং ক্লিয়ার করার বাটন -->
+        <div class="btn-group">
+          <button id="btnLoadSample" class="btn btn-primary" type="button">
+            📥 Load Sample Data
+          </button>
+          <button id="btnClearData" class="btn btn-danger" type="button">
+            🗑️ Clear All Data
+          </button>
+        </div>
+      </div>
+
+      <!-- ডেটা না থাকলে এই ফ্রেন্ডলি মেসেজটি প্রদর্শিত হবে -->
+      <div id="noDataBanner" class="alert alert-info" style="display: none;">
+        <div>
+          <h4 style="margin: 0 0 6px 0; font-size: 16px;">👋 Welcome to Shanti Care Hospital!</h4>
+          <p style="margin: 0;">
+            No records found in local storage. Click the <strong>"Load Sample Data"</strong> button above to populate realistic Bangladeshi patient records, doctor visits, lab tests, and billing data.
+          </p>
+        </div>
+      </div>
+
+      <!-- ড্যাশবোর্ডের ৬টি মূল স্ট্যাট কার্ড (Stat Boxes) -->
+      <section class="stat-grid" aria-label="Key Hospital Metrics">
+        <!-- ১. আজকে নিবন্ধিত রোগী -->
+        <div class="stat-card">
+          <div class="stat-label">Patients Registered Today</div>
+          <div class="stat-value" id="statPatientsToday">0</div>
+          <div class="stat-subtext" id="statPatientsTodaySub">Loading...</div>
+        </div>
+
+        <!-- ২. মোট নিবন্ধিত রোগী -->
+        <div class="stat-card">
+          <div class="stat-label">Total Patients</div>
+          <div class="stat-value" id="statTotalPatients">0</div>
+          <div class="stat-subtext" id="statTotalPatientsSub">All time registered</div>
+        </div>
+
+        <!-- ৩. আজকে নগদ ও অনলাইন কালেকশন -->
+        <div class="stat-card">
+          <div class="stat-label">Money Collected Today</div>
+          <div class="stat-value" id="statCollectedToday" style="color: var(--success);">Tk 0</div>
+          <div class="stat-subtext" id="statCollectedTodaySub">Visits & Lab payments</div>
+        </div>
+
+        <!-- ৪. ল্যাব টেস্ট পেন্ডিং -->
+        <div class="stat-card">
+          <div class="stat-label">Lab Tests Pending</div>
+          <div class="stat-value" id="statLabPending" style="color: var(--warning);">0</div>
+          <div class="stat-subtext" id="statLabPendingSub">Awaiting test results</div>
+        </div>
+
+        <!-- ৫. রোগীদের মোট বকেয়া টাকা -->
+        <div class="stat-card">
+          <div class="stat-label">Total Outstanding Due</div>
+          <div class="stat-value" id="statTotalDue" style="color: var(--danger);">Tk 0</div>
+          <div class="stat-subtext" id="statTotalDueSub">Unpaid patient charges</div>
+        </div>
+
+        <!-- ৬. আজকের মোট ভিজিট -->
+        <div class="stat-card">
+          <div class="stat-label">Visits Today</div>
+          <div class="stat-value" id="statVisitsToday">0</div>
+          <div class="stat-subtext" id="statVisitsTodaySub">Doctor consultations</div>
+        </div>
+      </section>
+
+      <!-- কুইক অ্যাকশন লিংক (Quick Links) -->
+      <section class="card mt-4">
+        <div class="card-header">
+          <h2 class="card-title">Quick Actions &amp; Navigation</h2>
+        </div>
+        <div class="card-body">
+          <p style="margin-top: 0; color: var(--text-muted);">
+            Quickly jump to any operational module:
+          </p>
+          <div class="flex flex-wrap gap-2">
+            <a href="patients.html" class="btn btn-secondary">➕ Register / View Patients</a>
+            <a href="visits.html" class="btn btn-secondary">🩺 Record Doctor Visit</a>
+            <a href="lab.html" class="btn btn-secondary">🧪 Order &amp; Update Lab Tests</a>
+            <a href="billing.html" class="btn btn-secondary">💳 Collect Payment &amp; Bills</a>
+            <a href="reports.html" class="btn btn-secondary">📊 View Financial Reports</a>
+            <a href="chat.html" class="btn btn-secondary">💬 Ask AI Assistant</a>
+          </div>
+        </div>
+      </section>
+
+      <!-- হাসপাতালের সাম্প্রতিক সাধারণ অবস্থা -->
+      <div class="grid grid-2 mt-4">
+        <!-- ডাক্তারদের তালিকা ও ফি এর ওভারভিউ -->
+        <section class="card">
+          <div class="card-header">
+            <h2 class="card-title">Active Doctors on Duty</h2>
+          </div>
+          <div class="card-body p-0">
+            <div class="table-scroll">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Doctor Name</th>
+                    <th>Department</th>
+                    <th>Consultation Fee</th>
+                  </tr>
+                </thead>
+                <tbody id="doctorsSummaryBody">
+                  <!-- জাভাস্ক্রিপ্ট দিয়ে লোড হবে -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- সিস্টেম তথ্য -->
+        <section class="card">
+          <div class="card-header">
+            <h2 class="card-title">System Status &amp; Rules</h2>
+          </div>
+          <div class="card-body">
+            <ul style="padding-left: 20px; line-height: 1.8; margin: 0; color: var(--text-main);">
+              <li><strong>Storage:</strong> 100% Client-side <code>localStorage</code> (No external database required).</li>
+              <li><strong>Local Timezone:</strong> Dates formatted in local Bangladeshi standard time.</li>
+              <li><strong>Week Start:</strong> Saturday (Bangladeshi work week convention).</li>
+              <li><strong>Billing FIFO Rule:</strong> Payments automatically settle the oldest unpaid charges first.</li>
+              <li><strong>Hospital Entity:</strong> Shanti Care Hospital (Educational Mock Environment).</li>
+            </ul>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <!-- স্ক্রিপ্ট ফাইলগুলো লোড করা হচ্ছে -->
+  <script src="db.js"></script>
+  <script src="sample-data.js"></script>
+  <script>
+    // ডোম লোড হওয়ার পর ড্যাশবোর্ড প্রস্তুত করার স্ক্রিপ্ট
+    document.addEventListener('DOMContentLoaded', function () {
+      // ১. সাইডবার রেন্ডার করা ('dashboard' মেনুটি হাইলাইট হবে)
+      renderSidebar('dashboard');
+
+      // ২. ড্যাশবোর্ডের সংখ্যা ও মেট্রিকস হিসাব করে বসানো
+      refreshDashboard();
+
+      // ৩. স্যাম্পল ডেটা লোড বাটন হ্যান্ডলার
+      document.getElementById('btnLoadSample').addEventListener('click', function () {
+        loadSampleData();
+      });
+
+      // ৪. ক্লিয়ার ডেটা বাটন হ্যান্ডলার
+      document.getElementById('btnClearData').addEventListener('click', function () {
+        clearAllData();
+      });
+    });
+
+    // ড্যাশবোর্ডের সব সংখ্যা রিফ্রেশ করার মূল ফাংশন
+    function refreshDashboard() {
+      var today = todayStr();
+
+      var patients = load('hms_patients');
+      var doctors = load('hms_doctors');
+      var visits = load('hms_visits');
+      var labOrders = load('hms_labOrders');
+      var charges = load('hms_charges');
+      var payments = load('hms_payments');
+
+      // যদি কোনো রোগী বা ডাক্তার না থাকে, তবে নো-ডেটা ব্যানার দেখানো হবে
+      var noDataBanner = document.getElementById('noDataBanner');
+      if (patients.length === 0 && charges.length === 0) {
+        noDataBanner.style.display = 'block';
+      } else {
+        noDataBanner.style.display = 'none';
+      }
+
+      // ১. আজ নিবন্ধিত রোগী গণনা
+      var patientsToday = patients.filter(function (p) {
+        return p.regDate === today;
+      }).length;
+      document.getElementById('statPatientsToday').textContent = patientsToday;
+      document.getElementById('statPatientsTodaySub').textContent = 'Date: ' + formatDate(today);
+
+      // ২. মোট রোগী
+      document.getElementById('statTotalPatients').textContent = patients.length;
+      document.getElementById('statTotalPatientsSub').textContent = patients.length + ' registered profiles';
+
+      // ৩. আজকের কালেকশন (শুধুমাত্র আজকের তারিখের পেমেন্টগুলোর যোগফল)
+      var collectedToday = 0;
+      for (var i = 0; i < payments.length; i++) {
+        if (payments[i].date === today) {
+          collectedToday += (Number(payments[i].amount) || 0);
+        }
+      }
+      document.getElementById('statCollectedToday').textContent = formatMoney(collectedToday);
+      document.getElementById('statCollectedTodaySub').textContent = payments.filter(function(p){ return p.date === today; }).length + ' transactions today';
+
+      // ৪. ল্যাব টেস্ট পেন্ডিং সংখ্যা
+      var labPending = labOrders.filter(function (order) {
+        return order.status === 'Pending';
+      }).length;
+      document.getElementById('statLabPending').textContent = labPending;
+      document.getElementById('statLabPendingSub').textContent = (labOrders.length - labPending) + ' tests completed';
+
+      // ৫. মোট বকেয়া টাকা (charges এর amount - paid এর সমষ্টি)
+      var totalDue = 0;
+      for (var j = 0; j < charges.length; j++) {
+        var dueOnCharge = (Number(charges[j].amount) || 0) - (Number(charges[j].paid) || 0);
+        if (dueOnCharge > 0) {
+          totalDue += dueOnCharge;
+        }
+      }
+      document.getElementById('statTotalDue').textContent = formatMoney(totalDue);
+      document.getElementById('statTotalDueSub').textContent = 'Across ' + charges.length + ' total charges';
+
+      // ৬. আজকের ভিজিট সংখ্যা
+      var visitsToday = visits.filter(function (v) {
+        return v.date === today;
+      }).length;
+      document.getElementById('statVisitsToday').textContent = visitsToday;
+      document.getElementById('statVisitsTodaySub').textContent = visits.length + ' visits all-time';
+
+      // ডাক্তারদের টেবিল পূরণ করা
+      var docBody = document.getElementById('doctorsSummaryBody');
+      docBody.innerHTML = '';
+      if (doctors.length === 0) {
+        docBody.innerHTML = '<tr><td colspan="3" class="text-center text-muted" style="padding:16px;">No doctor data found. Please load sample data.</td></tr>';
+      } else {
+        for (var d = 0; d < doctors.length; d++) {
+          var doc = doctors[d];
+          var tr = document.createElement('tr');
+          tr.innerHTML = '<td><strong>' + escapeHtml(doc.name) + '</strong> (' + escapeHtml(doc.id) + ')</td>' +
+                         '<td>' + escapeHtml(doc.department) + '</td>' +
+                         '<td>' + formatMoney(doc.fee) + '</td>';
+          docBody.appendChild(tr);
+        }
+      }
+    }
+  </script>
+  <script src="polish.js"></script>
+</body>
+</html>

@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Doctor Visits - Shanti Care Hospital</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app-layout">
+    <!-- বাম পাশের সাইডবার -->
+    <aside id="sidebar" class="sidebar"></aside>
+
+    <!-- মূল কনটেন্ট -->
+    <main class="main-content">
+      <div class="page-header">
+        <h1 class="page-title">Doctor Consultation Visits</h1>
+        <p class="page-subtitle">Record clinical consultations and generate visit charges automatically</p>
+      </div>
+
+      <!-- তথ্যপূর্ণ অ্যালার্ট মেসেজ (নতুন ভিজিট ও ডিউ সংক্রান্ত) -->
+      <div id="visitAlert" class="alert alert-success" style="display: none;"></div>
+
+      <!-- যদি রোগী বা ডাক্তার না থাকে তবে সতর্কবার্তা -->
+      <div id="missingDataWarning" class="alert alert-warning" style="display: none;">
+        <div>
+          <strong>Notice:</strong> Patients or Doctors list is empty. Please
+          <a href="index.html">Load Sample Data</a> from the Dashboard or
+          <a href="patients.html">register a patient</a> first before recording a visit.
+        </div>
+      </div>
+
+      <!-- নতুন ভিজিট রেকর্ড করার ফর্ম -->
+      <section class="card mb-4" id="visitFormCard">
+        <div class="card-header">
+          <h2 class="card-title">Record New Consultation Visit</h2>
+        </div>
+        <div class="card-body">
+          <form id="visitForm" novalidate>
+            <div class="grid grid-2">
+              <!-- রোগী নির্বাচন অংশ (সহজ ফিল্টারিং ড্রপডাউন) -->
+              <div class="form-group">
+                <label class="form-label" for="patientSelect">Select Patient *</label>
+                <!-- রোগীর দ্রুত সার্চ বক্স -->
+                <input type="text" id="patientFilterInput" class="form-control mb-1" placeholder="🔍 Type to filter patient dropdown..." style="font-size: 13px; padding: 6px 10px;">
+                <select id="patientSelect" class="form-control" required>
+                  <option value="">-- Choose a patient --</option>
+                </select>
+                <div id="patientError" class="form-error">Please select a patient.</div>
+              </div>
+
+              <!-- ডাক্তার নির্বাচন অংশ -->
+              <div class="form-group">
+                <label class="form-label" for="doctorSelect">Select Doctor *</label>
+                <select id="doctorSelect" class="form-control" required>
+                  <option value="">-- Choose a doctor --</option>
+                </select>
+                <div id="doctorError" class="form-error">Please select a doctor.</div>
+              </div>
+            </div>
+
+            <div class="grid grid-2 mt-2">
+              <!-- কনসালটেশন ফি (ডাক্তার সিলেক্ট করলে নিজে থেকেই বসবে, তবে পরিবর্তনযোগ্য) -->
+              <div class="form-group">
+                <label class="form-label" for="visitFee">Consultation Fee (Tk) *</label>
+                <input type="number" id="visitFee" class="form-control" min="0" step="50" placeholder="e.g. 800" required>
+                <div id="feeError" class="form-error">Please enter a valid consultation fee.</div>
+              </div>
+
+              <!-- ভিজিটের তারিখ (আজকের তারিখ ডিফল্ট) -->
+              <div class="form-group">
+                <label class="form-label" for="visitDate">Visit Date *</label>
+                <input type="date" id="visitDate" class="form-control" required>
+                <div id="dateError" class="form-error">Please select a valid visit date.</div>
+              </div>
+            </div>
+
+            <!-- রোগীর সমস্যা (Problem) -->
+            <div class="form-group mt-2">
+              <label class="form-label" for="visitProblem">Clinical Problem / Chief Complaint *</label>
+              <input type="text" id="visitProblem" class="form-control" placeholder="e.g. High fever with persistent dry cough for 3 days" required>
+              <div id="problemError" class="form-error">Clinical problem description is required.</div>
+            </div>
+
+            <!-- প্রেসক্রিপশন বা ঔষধ (Medicines) -->
+            <div class="form-group mt-2">
+              <label class="form-label" for="visitMedicines">Prescribed Medicines / Clinical Advice</label>
+              <textarea id="visitMedicines" class="form-control" rows="3" placeholder="e.g. Tab. Paracetamol 500mg 1+1+1 (3 days), Tab. Azithromycin 500mg 1+0+0 (5 days)"></textarea>
+            </div>
+
+            <!-- সাবমিট বাটন -->
+            <div class="mt-3 flex justify-between items-center">
+              <span class="text-muted" style="font-size: 13px;">
+                ⚡ Note: Saving creates an automated billing charge under this patient's account.
+              </span>
+              <button type="submit" class="btn btn-primary">
+                🩺 Save Visit Record
+              </button>
+            </div>
+          </form>
+        </div>
+      </section>
+
+      <!-- ভিজিটের তালিকা ও ডাক্তার অনুযায়ী ফিল্টারিং -->
+      <section class="card">
+        <div class="card-header flex justify-between items-center flex-wrap gap-2">
+          <div>
+            <h2 class="card-title">Consultation History</h2>
+            <span id="visitCountBadge" class="text-muted" style="font-size: 13px;">Loading visits...</span>
+          </div>
+          <!-- ডাক্তার অনুযায়ী ফিল্টার করার ড্রপডাউন -->
+          <div class="flex items-center gap-1">
+            <label for="filterDoctor" class="form-label mb-0" style="font-size: 13px; white-space: nowrap;">Filter by Doctor:</label>
+            <select id="filterDoctor" class="form-control" style="min-width: 200px;">
+              <option value="ALL">All Doctors</option>
+            </select>
+          </div>
+        </div>
+        <div class="card-body p-0">
+          <div class="table-scroll">
+            <table class="table" id="visitsTable">
+              <thead>
+                <tr>
+                  <th>Visit ID</th>
+                  <th>Date</th>
+                  <th>Patient</th>
+                  <th>Doctor</th>
+                  <th>Chief Complaint</th>
+                  <th>Prescribed Medicines</th>
+                  <th class="text-right">Fee</th>
+                </tr>
+              </thead>
+              <tbody id="visitsTableBody">
+                <!-- জাভাস্ক্রিপ্ট দিয়ে রো গুলো আসবে -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- স্ক্রিপ্ট ফাইল -->
+  <script src="db.js"></script>
+  <script src="sample-data.js"></script>
+  <script>
+    // গ্লোবাল স্টেট
+    var allPatients = [];
+    var allDoctors = [];
+    var allVisits = [];
+
+    document.addEventListener('DOMContentLoaded', function () {
+      // ১. সাইডবার রেন্ডার
+      renderSidebar('visits');
+
+      // ২. আজকের তারিখ ইনপুট বক্সে ডিফল্টভাবে বসানো
+      document.getElementById('visitDate').value = todayStr();
+
+      // ৩. ড্রপডাউন এবং প্রাথমিক ডেটা লোড
+      initPageData();
+
+      // ৪. ডাক্তার সিলেক্ট করলে স্বয়ংক্রিয়ভাবে তার ফি ইনপুট বক্সে বসানো
+      document.getElementById('doctorSelect').addEventListener('change', function () {
+        var doctorId = this.value;
+        if (!doctorId) {
+          document.getElementById('visitFee').value = '';
+          return;
+        }
+        var doc = getDoctor(doctorId);
+        if (doc && doc.fee !== undefined) {
+          document.getElementById('visitFee').value = doc.fee;
+        }
+      });
+
+      // ৫. রোগীর ড্রপডাউনের জন্য লাইভ ফিল্টারিং
+      document.getElementById('patientFilterInput').addEventListener('input', function (e) {
+        populatePatientDropdown(e.target.value);
+      });
+
+      // ৬. ডাক্তার ফিল্টার পরিবর্তন ইভেন্ট
+      document.getElementById('filterDoctor').addEventListener('change', function () {
+        renderVisitsTable();
+      });
+
+      // ৭. ফর্ম সাবমিট হ্যান্ডলার
+      document.getElementById('visitForm').addEventListener('submit', handleVisitSubmit);
+    });
+
+    // প্রাথমিক ডেটা লোড ও ভ্যালিডেশন
+    function initPageData() {
+      allPatients = load('hms_patients');
+      allDoctors = load('hms_doctors');
+
+      var missingWarning = document.getElementById('missingDataWarning');
+      if (allPatients.length === 0 || allDoctors.length === 0) {
+        missingWarning.style.display = 'block';
+      } else {
+        missingWarning.style.display = 'none';
+      }
+
+      // রোগীর ড্রপডাউন সাজানো
+      populatePatientDropdown('');
+
+      // ডাক্তারের ড্রপডাউন সাজানো (ফর্মের জন্য এবং ফিল্টারের জন্য)
+      populateDoctorDropdowns();
+
+      // পূর্বের ভিজিট তালিকা লোড ও দেখানো
+      loadVisits();
+    }
+
+    // রোগীর ড্রপডাউনে অপশন যোগ করা (সার্চ ফিল্টার সাপোর্টসহ)
+    function populatePatientDropdown(filterText) {
+      var select = document.getElementById('patientSelect');
+      var currentVal = select.value;
+      select.innerHTML = '<option value="">-- Choose a patient --</option>';
+
+      var q = (filterText || '').trim().toLowerCase();
+      var filtered = allPatients.filter(function (p) {
+        if (!q) return true;
+        return (p.name || '').toLowerCase().indexOf(q) !== -1 ||
+               (p.id || '').toLowerCase().indexOf(q) !== -1 ||
+               (p.phone || '').indexOf(q) !== -1;
+      });
+
+      for (var i = 0; i < filtered.length; i++) {
+        var p = filtered[i];
+        var opt = document.createElement('option');
+        opt.value = p.id;
+        opt.textContent = p.id + ' - ' + p.name + ' (' + p.phone + ')';
+        if (p.id === currentVal) {
+          opt.selected = true;
+        }
+        select.appendChild(opt);
+      }
+    }
+
+    // ডাক্তারের ড্রপডাউনগুলো পূরণ করা
+    function populateDoctorDropdowns() {
+      var select = document.getElementById('doctorSelect');
+      var filterSelect = document.getElementById('filterDoctor');
+
+      select.innerHTML = '<option value="">-- Choose a doctor --</option>';
+      filterSelect.innerHTML = '<option value="ALL">All Doctors</option>';
+
+      for (var i = 0; i < allDoctors.length; i++) {
+        var d = allDoctors[i];
+
+        // ফর্মের ড্রপডাউন
+        var opt = document.createElement('option');
+        opt.value = d.id;
+        opt.textContent = d.name + ' (' + d.department + ' - Fee: ' + formatMoney(d.fee) + ')';
+        select.appendChild(opt);
+
+        // টেবিল ফিল্টার ড্রপডাউন
+        var filterOpt = document.createElement('option');
+        filterOpt.value = d.id;
+        filterOpt.textContent = d.name + ' (' + d.department + ')';
+        filterSelect.appendChild(filterOpt);
+      }
+    }
+
+    // ভিজিট ডেটা লোড করা
+    function loadVisits() {
+      allVisits = load('hms_visits');
+      // নতুন ভিজিট সবার উপরে (Newest first)
+      allVisits.sort(function (a, b) {
+        if (a.date !== b.date) {
+          return b.date.localeCompare(a.date);
+        }
+        return b.id.localeCompare(a.id);
+      });
+
+      renderVisitsTable();
+    }
+
+    // ভিজিট টেবিল রেন্ডার করা
+    function renderVisitsTable() {
+      var tbody = document.getElementById('visitsTableBody');
+      var badge = document.getElementById('visitCountBadge');
+      var selectedDoctor = document.getElementById('filterDoctor').value;
+
+      var displayed = allVisits;
+      if (selectedDoctor !== 'ALL') {
+        displayed = allVisits.filter(function (v) {
+          return v.doctorId === selectedDoctor;
+        });
+      }
+
+      badge.textContent = 'Showing ' + displayed.length + ' of ' + allVisits.length + ' visits';
+      tbody.innerHTML = '';
+
+      if (displayed.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="7" class="text-center text-muted" style="padding: 24px;">No consultation records found for the selected criteria.</td></tr>';
+        return;
+      }
+
+      for (var i = 0; i < displayed.length; i++) {
+        var v = displayed[i];
+        var patientName = getPatientName(v.patientId);
+        var doc = getDoctor(v.doctorId);
+        var doctorName = doc ? doc.name + ' (' + doc.department + ')' : v.doctorId;
+
+        var tr = document.createElement('tr');
+        tr.innerHTML = '<td><strong>' + escapeHtml(v.id) + '</strong></td>' +
+                       '<td>' + formatDate(v.date) + '</td>' +
+                       '<td>' + escapeHtml(patientName) + ' <small class="text-muted">(' + escapeHtml(v.patientId) + ')</small></td>' +
+                       '<td>' + escapeHtml(doctorName) + '</td>' +
+                       '<td>' + escapeHtml(v.problem) + '</td>' +
+                       '<td style="max-width: 280px; white-space: normal;">' + escapeHtml(v.medicines || '-') + '</td>' +
+                       '<td class="text-right"><strong>' + formatMoney(v.fee) + '</strong></td>';
+        tbody.appendChild(tr);
+      }
+    }
+
+    // নতুন ভিজিট সেভ করার ফর্ম হ্যান্ডলার
+    function handleVisitSubmit(event) {
+      event.preventDefault();
+
+      var patientId = document.getElementById('patientSelect').value;
+      var doctorId = document.getElementById('doctorSelect').value;
+      var fee = parseFloat(document.getElementById('visitFee').value);
+      var date = document.getElementById('visitDate').value;
+      var problem = document.getElementById('visitProblem').value.trim();
+      var medicines = document.getElementById('visitMedicines').value.trim();
+
+      // এরর রিসেট
+      document.getElementById('patientError').style.display = 'none';
+      document.getElementById('doctorError').style.display = 'none';
+      document.getElementById('feeError').style.display = 'none';
+      document.getElementById('dateError').style.display = 'none';
+      document.getElementById('problemError').style.display = 'none';
+
+      var hasError = false;
+
+      if (!patientId) {
+        document.getElementById('patientError').style.display = 'block';
+        hasError = true;
+      }
+      if (!doctorId) {
+        document.getElementById('doctorError').style.display = 'block';
+        hasError = true;
+      }
+      if (isNaN(fee) || fee < 0) {
+        document.getElementById('feeError').style.display = 'block';
+        hasError = true;
+      }
+      if (!date) {
+        document.getElementById('dateError').style.display = 'block';
+        hasError = true;
+      }
+      if (!problem) {
+        document.getElementById('problemError').style.display = 'block';
+        hasError = true;
+      }
+
+      if (hasError) return;
+
+      // db.js এর addVisit ফাংশন কল করা (যা স্বয়ংক্রিয়ভাবে চার্জ C-xxxx তৈরি করবে)
+      var newVisit = addVisit({
+        patientId: patientId,
+        doctorId: doctorId,
+        date: date,
+        problem: problem,
+        medicines: medicines,
+        fee: fee
+      });
+
+      // রোগীর বর্তমান মোট বকেয়া জানা
+      var patientDue = getPatientDue(patientId);
+      var patientName = getPatientName(patientId);
+
+      // ফর্ম কিছুটা রিসেট করা (তারিখ ও রোগী আগেরটা রাখতে পারেন বা রিসেট করতে পারেন)
+      document.getElementById('visitProblem').value = '';
+      document.getElementById('visitMedicines').value = '';
+      document.getElementById('patientFilterInput').value = '';
+      populatePatientDropdown('');
+
+      // সাফল্য বার্তা প্রদর্শন
+      var alertBox = document.getElementById('visitAlert');
+      alertBox.innerHTML = '✅ Visit recorded successfully with ID: <strong>' + escapeHtml(newVisit.id) + '</strong> for patient <strong>' + escapeHtml(patientName) + '</strong>.<br>' +
+                           'A consultation charge of ' + formatMoney(fee) + ' was created. Patient\'s total outstanding due is now: <strong>' + formatMoney(patientDue) + '</strong>.';
+      alertBox.style.display = 'block';
+
+      // ৫ সেকেন্ড পর সতর্কতা হাইড করা
+      setTimeout(function () {
+        alertBox.style.display = 'none';
+      }, 7000);
+
+      // টেবিল রিফ্রেশ করা
+      loadVisits();
+    }
+  </script>
+  <script src="polish.js"></script>
+</body>
+</html>

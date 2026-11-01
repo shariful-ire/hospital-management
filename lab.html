@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lab Tests - Shanti Care Hospital</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app-layout">
+    <aside class="sidebar" id="sidebar"></aside>
+
+    <main class="main-content">
+      <div class="page-header flex justify-between items-center flex-wrap gap-2">
+        <div>
+          <h1 class="page-title">🧪 Laboratory Tests & Diagnostics</h1>
+          <p class="page-subtitle">Shanti Care Hospital - Diagnostics Management</p>
+        </div>
+        <div class="flex gap-2">
+          <span class="badge badge-warning" id="pendingCounter">Pending: 0</span>
+          <span class="badge badge-success" id="doneCounter">Done: 0</span>
+        </div>
+      </div>
+
+      <div id="alertBox"></div>
+
+      <div class="grid grid-2 mb-4">
+        <!-- ফর্ম -->
+        <div class="card">
+          <div class="card-header">
+            <h2 class="card-title">📝 Order Laboratory Tests</h2>
+          </div>
+          <div class="card-body">
+            <form id="labOrderForm" onsubmit="handleCreateLabOrder(event)">
+              <div class="form-group">
+                <label class="form-label" for="patientSearch">🔍 Filter Patient</label>
+                <input 
+                  type="text" 
+                  id="patientSearch" 
+                  class="form-control" 
+                  placeholder="Type name, phone or ID to filter..." 
+                  oninput="filterPatientDropdown()"
+                >
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="patientSelect">Select Patient *</label>
+                <select id="patientSelect" class="form-control" required>
+                  <option value="">-- Choose a Patient --</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="orderDate">Order Date *</label>
+                <input type="date" id="orderDate" class="form-control" required>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Select Available Tests *</label>
+                <div id="testCheckboxesList" style="max-height: 220px; overflow-y: auto; border: 1px solid var(--border); padding: 12px; border-radius: 6px; background: #fff;">
+                </div>
+              </div>
+
+              <div class="alert alert-info flex justify-between items-center" style="margin-bottom: 16px;">
+                <span>Selected Tests Total:</span>
+                <strong id="runningTotalText" style="font-size: 16px;">Tk 0</strong>
+              </div>
+
+              <button type="submit" class="btn btn-primary" style="width: 100%;">
+                💾 Confirm & Place Lab Orders
+              </button>
+            </form>
+          </div>
+        </div>
+
+        <!-- প্রাইস লিস্ট -->
+        <div class="card">
+          <div class="card-header flex justify-between items-center">
+            <h2 class="card-title">📋 Official Test Price List</h2>
+            <span class="badge badge-info" id="testCountBadge">15 Tests</span>
+          </div>
+          <div class="card-body p-0">
+            <div class="table-scroll" style="max-height: 480px;">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Test Name</th>
+                    <th class="text-right">Standard Fee</th>
+                  </tr>
+                </thead>
+                <tbody id="priceListTableBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- হিস্টোরি ও রেজাল্ট টেবিল -->
+      <div class="card">
+        <div class="card-header flex justify-between items-center flex-wrap gap-2">
+          <h2 class="card-title">🔬 Diagnostic Orders & Results</h2>
+          <div class="flex items-center gap-2">
+            <label for="statusFilter" class="form-label mb-0" style="margin-bottom: 0;">Status:</label>
+            <select id="statusFilter" class="form-control" style="width: auto; padding: 4px 10px;" onchange="renderOrdersTable()">
+              <option value="All">All Tests</option>
+              <option value="Pending">Pending Only</option>
+              <option value="Done">Completed (Done) Only</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="card-body p-0">
+          <div class="table-scroll">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Order ID</th>
+                  <th>Date</th>
+                  <th>Patient Name</th>
+                  <th>Test Name</th>
+                  <th class="text-right">Price</th>
+                  <th class="text-center">Status</th>
+                  <th>Clinical Result / Findings</th>
+                  <th class="text-center">Action</th>
+                </tr>
+              </thead>
+              <tbody id="ordersTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- রেজাল্ট লেখার মডাল -->
+  <div id="resultModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.6); z-index: 999; align-items: center; justify-content: center; padding: 20px;">
+    <div class="card" style="width: 100%; max-width: 500px; box-shadow: 0 10px 25px rgba(0,0,0,0.2);">
+      <div class="card-header flex justify-between items-center">
+        <h3 class="card-title">📝 Enter Diagnostic Findings</h3>
+        <button type="button" class="btn btn-secondary btn-sm" onclick="closeResultModal()">✕</button>
+      </div>
+      <div class="card-body">
+        <form id="resultForm" onsubmit="submitLabResult(event)">
+          <input type="hidden" id="modalOrderId">
+          
+          <div class="mb-3">
+            <p><strong>Order:</strong> <span id="modalOrderInfo">-</span></p>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="modalResultInput">Test Findings / Report Value *</label>
+            <textarea 
+              id="modalResultInput" 
+              class="form-control" 
+              rows="3" 
+              placeholder="e.g. Hb: 13.8 g/dL, ESR: 12 mm/hr (Within normal limits)" 
+              required
+            ></textarea>
+          </div>
+
+          <div class="flex justify-between items-center mt-3">
+            <button type="button" class="btn btn-secondary" onclick="closeResultModal()">Cancel</button>
+            <button type="submit" class="btn btn-primary">✅ Save & Complete Test</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script src="db.js"></script>
+  <script src="sample-data.js"></script>
+  <script>
+    renderSidebar('lab');
+
+    window.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('orderDate').value = todayStr();
+      renderPriceList();
+      populateTestCheckboxes();
+      populatePatientDropdown();
+      renderOrdersTable();
+    });
+
+    function showAlert(msg, type = 'success') {
+      const box = document.getElementById('alertBox');
+      box.innerHTML = `<div class="alert alert-${type}">${msg}</div>`;
+      setTimeout(() => {
+        box.innerHTML = '';
+      }, 5000);
+    }
+
+    function renderPriceList() {
+      const tbody = document.getElementById('priceListTableBody');
+      tbody.innerHTML = LAB_TESTS.map((test, idx) => `
+        <tr>
+          <td style="color: var(--muted);">${idx + 1}</td>
+          <td><strong>${escapeHtml(test.name)}</strong></td>
+          <td class="text-right" style="font-weight: 600;">${formatMoney(test.price)}</td>
+        </tr>
+      `).join('');
+    }
+
+    function populateTestCheckboxes() {
+      const container = document.getElementById('testCheckboxesList');
+      container.innerHTML = LAB_TESTS.map((test, idx) => `
+        <label style="display: flex; align-items: center; justify-content: space-between; padding: 6px 0; border-bottom: 1px dashed #f1f5f9; cursor: pointer;">
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <input type="checkbox" name="labTestItem" value="${escapeHtml(test.name)}" data-price="${test.price}" onchange="calculateRunningTotal()">
+            <span>${escapeHtml(test.name)}</span>
+          </div>
+          <span style="font-weight: 600; color: var(--primary);">${formatMoney(test.price)}</span>
+        </label>
+      `).join('');
+    }
+
+    function calculateRunningTotal() {
+      const checkboxes = document.querySelectorAll('input[name="labTestItem"]:checked');
+      let total = 0;
+      checkboxes.forEach(cb => {
+        total += Number(cb.getAttribute('data-price')) || 0;
+      });
+      document.getElementById('runningTotalText').textContent = formatMoney(total);
+    }
+
+    function populatePatientDropdown(filterText = '') {
+      const select = document.getElementById('patientSelect');
+      const patients = load('hms_patients');
+      const currentVal = select.value;
+
+      select.innerHTML = '<option value="">-- Choose a Patient --</option>';
+
+      const filtered = patients.filter(p => {
+        if (!filterText) return true;
+        const q = filterText.toLowerCase();
+        return (p.name || '').toLowerCase().includes(q) ||
+               (p.phone || '').includes(q) ||
+               (p.id || '').toLowerCase().includes(q);
+      });
+
+      filtered.forEach(p => {
+        const opt = document.createElement('option');
+        opt.value = p.id;
+        opt.textContent = `${p.id} - ${p.name} (${p.phone})`;
+        select.appendChild(opt);
+      });
+
+      if (currentVal) select.value = currentVal;
+    }
+
+    function filterPatientDropdown() {
+      const q = document.getElementById('patientSearch').value.trim();
+      populatePatientDropdown(q);
+    }
+
+    function handleCreateLabOrder(event) {
+      event.preventDefault();
+
+      const patientId = document.getElementById('patientSelect').value;
+      const orderDate = document.getElementById('orderDate').value;
+      const checkboxes = document.querySelectorAll('input[name="labTestItem"]:checked');
+
+      if (!patientId) {
+        alert('Please choose a valid patient first.');
+        return;
+      }
+
+      if (checkboxes.length === 0) {
+        alert('Please select at least one laboratory test from the checklist.');
+        return;
+      }
+
+      let createdCount = 0;
+      let totalBill = 0;
+
+      checkboxes.forEach(cb => {
+        const testName = cb.value;
+        const price = Number(cb.getAttribute('data-price'));
+        addLabOrder(patientId, testName, price, orderDate);
+        createdCount++;
+        totalBill += price;
+      });
+
+      document.querySelectorAll('input[name="labTestItem"]').forEach(cb => cb.checked = false);
+      calculateRunningTotal();
+      document.getElementById('patientSelect').value = '';
+      document.getElementById('patientSearch').value = '';
+
+      showAlert(`Successfully created ${createdCount} diagnostic orders for ${getPatientName(patientId)}. Total Billed: ${formatMoney(totalBill)}`);
+      renderOrdersTable();
+    }
+
+    function renderOrdersTable() {
+      const orders = load('hms_labOrders');
+      const statusFilter = document.getElementById('statusFilter').value;
+      const tbody = document.getElementById('ordersTableBody');
+
+      const pendingCount = orders.filter(o => o.status === 'Pending').length;
+      const doneCount = orders.filter(o => o.status === 'Done').length;
+      document.getElementById('pendingCounter').textContent = `Pending: ${pendingCount}`;
+      document.getElementById('doneCounter').textContent = `Done: ${doneCount}`;
+
+      let filtered = [...orders];
+      if (statusFilter !== 'All') {
+        filtered = filtered.filter(o => o.status === statusFilter);
+      }
+
+      filtered.sort((a, b) => b.id.localeCompare(a.id));
+
+      if (filtered.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="8" class="text-center text-muted" style="padding: 24px;">No diagnostic orders found matching the filter.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = filtered.map(o => {
+        const isDone = o.status === 'Done';
+        const badgeClass = isDone ? 'badge-success' : 'badge-warning';
+        const resultDisplay = isDone 
+          ? `<strong>${escapeHtml(o.result || 'Completed')}</strong> <br><small class="text-muted">(${formatDate(o.doneDate)})</small>` 
+          : `<span class="text-muted">Awaiting lab analysis</span>`;
+
+        const actionBtn = isDone
+          ? `<span style="color: var(--green); font-weight: 600;">✓ Ready</span>`
+          : `<button type="button" class="btn btn-secondary btn-sm" onclick="openResultModal('${o.id}', '${escapeHtml(o.testName)}', '${escapeHtml(getPatientName(o.patientId))}')">✍️ Enter Result</button>`;
+
+        return `
+          <tr>
+            <td><strong>${escapeHtml(o.id)}</strong></td>
+            <td>${formatDate(o.date)}</td>
+            <td>${escapeHtml(getPatientName(o.patientId))} <br><small class="text-muted">${escapeHtml(o.patientId)}</small></td>
+            <td><strong>${escapeHtml(o.testName)}</strong></td>
+            <td class="text-right">${formatMoney(o.price)}</td>
+            <td class="text-center"><span class="badge ${badgeClass}">${escapeHtml(o.status)}</span></td>
+            <td>${resultDisplay}</td>
+            <td class="text-center">${actionBtn}</td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function openResultModal(orderId, testName, patientName) {
+      document.getElementById('modalOrderId').value = orderId;
+      document.getElementById('modalOrderInfo').textContent = `${orderId} - ${testName} (${patientName})`;
+      document.getElementById('modalResultInput').value = '';
+      document.getElementById('resultModal').style.display = 'flex';
+    }
+
+    function closeResultModal() {
+      document.getElementById('resultModal').style.display = 'none';
+    }
+
+    function submitLabResult(event) {
+      event.preventDefault();
+      const orderId = document.getElementById('modalOrderId').value;
+      const resultText = document.getElementById('modalResultInput').value.trim();
+
+      if (!resultText) {
+        alert('Please write the laboratory test findings/results.');
+        return;
+      }
+
+      markLabDone(orderId, resultText);
+      closeResultModal();
+      showAlert(`Diagnostic order ${orderId} marked as completed.`);
+      renderOrdersTable();
+    }
+  </script>
+  <script src="polish.js"></script>
+</body>
+</html>
