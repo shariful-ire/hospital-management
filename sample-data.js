@@ -35,6 +35,7 @@ function clearAllData() {
   if (confirm("Are you sure you want to delete ALL hospital data? This cannot be undone.")) {
     localStorage.removeItem("hms_patients");
     localStorage.removeItem("hms_doctors");
+    localStorage.removeItem("hms_staff");
     localStorage.removeItem("hms_visits");
     localStorage.removeItem("hms_labOrders");
     localStorage.removeItem("hms_charges");
@@ -69,6 +70,14 @@ function loadSampleData() {
     { id: "D-003", name: "Dr. Karim", department: "Pediatrics", fee: 600 },
     { id: "D-004", name: "Dr. Nasrin", department: "Gynecology", fee: 900 },
     { id: "D-005", name: "Dr. Hasan", department: "Orthopedics", fee: 700 }
+  ];
+
+  var staff = [
+    { id: "S-001", name: "Nadia Akter", role: "Nurse", department: "Emergency", shift: "Morning", phone: "01711000001", status: "On duty" },
+    { id: "S-002", name: "Rafiq Hasan", role: "Lab Technician", department: "Laboratory", shift: "Day", phone: "01711000002", status: "On duty" },
+    { id: "S-003", name: "Mitu Chowdhury", role: "Receptionist", department: "Front Desk", shift: "Morning", phone: "01711000003", status: "On duty" },
+    { id: "S-004", name: "Jamal Uddin", role: "Pharmacist", department: "Pharmacy", shift: "Evening", phone: "01711000004", status: "On duty" },
+    { id: "S-005", name: "Sonia Rahman", role: "Nurse", department: "Outpatient", shift: "Day", phone: "01711000005", status: "Off duty" }
   ];
 
   /* ----------------------------------------------------------
@@ -396,6 +405,7 @@ function loadSampleData() {
      à§¬. à¦¡à§‡à¦Ÿà¦¾à¦¬à§‡à¦¸à§‡ à¦¸à¦‚à¦°à¦•à§à¦·à¦£
      ---------------------------------------------------------- */
   save("hms_doctors", doctors);
+  save("hms_staff", staff);
   save("hms_patients", patients);
   save("hms_visits", visits);
   save("hms_labOrders", labOrders);
@@ -421,6 +431,7 @@ function loadSampleData() {
   // à¦¸à¦«à¦² à¦®à§‡à¦¸à§‡à¦œ à¦¦à§‡à¦–à¦¾à¦¨à§‹ (English)
   var summaryMsg = "Sample Data Loaded Successfully!\n\n" +
     "- Doctors: " + doctors.length + "\n" +
+    "- Hospital Staff: " + staff.length + "\n" +
     "- Patients: " + patients.length + " (" + patientsWithDue + " have due)\n" +
     "- Doctor Visits: " + visits.length + "\n" +
     "- Lab Orders: " + labOrders.length + "\n" +

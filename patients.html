@@ -180,7 +180,7 @@
                        '<td>' + escapeHtml(p.age) + ' yrs / ' + escapeHtml(p.sex) + '</td>' +
                        '<td>' + escapeHtml(p.phone) + '</td>' +
                        '<td>' + escapeHtml(p.address || '-') + '</td>' +
-                       '<td>' + formatDate(p.regDate) + '</td>' +
+                       '<td>' + escapeHtml(formatDate(p.regDate)) + '</td>' +
                        '<td class="text-right">' + dueBadge + '</td>';
         tbody.appendChild(tr);
       }

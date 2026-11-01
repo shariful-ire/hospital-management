@@ -405,7 +405,7 @@
       data.rows.forEach(r => {
         html += `
           <tr>
-            <td><strong>${formatDate(r.date)}</strong> (${r.date})</td>
+            <td><strong>${escapeHtml(formatDate(r.date))}</strong> (${escapeHtml(r.date)})</td>
             <td style="text-align: right;">${formatMoney(r.visits)}</td>
             <td style="text-align: right;">${formatMoney(r.lab)}</td>
             <td style="text-align: right; font-weight:700; color:var(--primary);">${formatMoney(r.total)}</td>
@@ -469,8 +469,8 @@
       data.rows.forEach(p => {
         html += `
           <tr>
-            <td><strong>${p.id}</strong></td>
-            <td>${formatDate(p.regDate)}</td>
+            <td><strong>${escapeHtml(p.id)}</strong></td>
+            <td>${escapeHtml(formatDate(p.regDate))}</td>
             <td><strong>${escapeHtml(p.name)}</strong></td>
             <td>${p.age} yrs / ${escapeHtml(p.sex)}</td>
             <td>${escapeHtml(p.phone || 'N/A')}</td>
@@ -530,7 +530,7 @@
       data.rows.forEach(d => {
         html += `
           <tr>
-            <td><strong>${d.doctorId}</strong></td>
+            <td><strong>${escapeHtml(d.doctorId)}</strong></td>
             <td><strong>${escapeHtml(d.name)}</strong></td>
             <td>${escapeHtml(d.department)}</td>
             <td style="text-align: center; font-weight:700;">${d.visits}</td>

@@ -399,7 +399,7 @@
           const tr = document.createElement('tr');
           tr.innerHTML = `
             <td><strong>${escapeHtml(c.id)}</strong></td>
-            <td>${formatDate(c.date)}</td>
+            <td>${escapeHtml(formatDate(c.date))}</td>
             <td><span class="badge" style="background:#f1f5f9; color:#475569;">${escapeHtml((c.type || '').toUpperCase())}</span></td>
             <td>${formatMoney(c.amount)}</td>
             <td style="color: var(--green);">${formatMoney(c.paid)}</td>
@@ -420,7 +420,7 @@
         patientPayments.forEach(pay => {
           const tr = document.createElement('tr');
           tr.innerHTML = `
-            <td>${formatDate(pay.date)}</td>
+            <td>${escapeHtml(formatDate(pay.date))}</td>
             <td><strong>${escapeHtml(pay.receiptId || '-')}</strong></td>
             <td><span class="badge" style="background:#f1f5f9; color:#475569;">${escapeHtml((pay.type || '').toUpperCase())}</span></td>
             <td style="font-weight: 600; color: var(--green);">${formatMoney(pay.amount)}</td>
@@ -466,7 +466,7 @@
           <td>${escapeHtml(item.phone)}</td>
           <td style="color: var(--red); font-weight: 700;">${formatMoney(item.due)}</td>
           <td>
-            <button class="btn btn-secondary btn-sm" onclick="selectPatientForBilling('${item.id}')">
+            <button class="btn btn-secondary btn-sm" data-patient-id="${escapeHtml(item.id)}">
               Select & Pay âž”
             </button>
           </td>
@@ -480,6 +480,11 @@
       loadPatientBilling(patientId);
       window.scrollTo({ top: 120, behavior: 'smooth' });
     };
+
+    duePatientsTableBody.addEventListener('click', (event) => {
+      const button = event.target.closest('[data-patient-id]');
+      if (button) window.selectPatientForBilling(button.dataset.patientId);
+    });
 
     patientSearch.addEventListener('input', (e) => {
       populatePatientSelect(e.target.value);

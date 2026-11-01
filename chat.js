@@ -243,6 +243,11 @@
         data: reportData
       };
 
+      try {
+        var sessionKey = sessionStorage.getItem('hms_chattermate_key');
+        if (sessionKey) requestBody.apiKey = sessionKey;
+      } catch (_) {}
+
       // Bangla: key never sent from the browser; the server uses its own key
 
       var response = await fetch('/api/ask', {

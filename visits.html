@@ -302,7 +302,7 @@
 
         var tr = document.createElement('tr');
         tr.innerHTML = '<td><strong>' + escapeHtml(v.id) + '</strong></td>' +
-                       '<td>' + formatDate(v.date) + '</td>' +
+                       '<td>' + escapeHtml(formatDate(v.date)) + '</td>' +
                        '<td>' + escapeHtml(patientName) + ' <small class="text-muted">(' + escapeHtml(v.patientId) + ')</small></td>' +
                        '<td>' + escapeHtml(doctorName) + '</td>' +
                        '<td>' + escapeHtml(v.problem) + '</td>' +

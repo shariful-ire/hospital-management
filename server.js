@@ -218,8 +218,8 @@ function parseModelChunkStream(rawText) {
   return answer.trim();
 }
 
-async function askChatterMate(question, data) {
-  const keyToUse = activeApiKey;
+async function askChatterMate(question, data, providedKey) {
+  const keyToUse = (typeof providedKey === 'string' && providedKey.trim()) || activeApiKey;
   if (!keyToUse) {
     throw Object.assign(new Error('No API key is connected. Open Settings (âš™ï¸) and connect your ChatterMate API key.'), { statusCode: 400 });
   }
@@ -334,10 +334,14 @@ const server = http.createServer(async (req, res) => {
   }
 
   if (req.method === 'GET' && route === '/api/status') {
-    return sendJson(res, 200, { keyConfigured: Boolean(activeApiKey) });
+    return sendJson(res, 200, { keyConfigured: Boolean(activeApiKey), connected: Boolean(activeApiKey), canConnect: true, host: 'local' });
   }
 
   if (req.method === 'POST' && route === '/api/settings/connect') {
+    return handleConnect(req, res);
+  }
+
+  if (req.method === 'POST' && route === '/api/connect') {
     return handleConnect(req, res);
   }
 
@@ -352,7 +356,8 @@ const server = http.createServer(async (req, res) => {
       const data = body.data && typeof body.data === 'object' ? body.data : {};
       if (!question) return sendJson(res, 400, { error: 'Question cannot be empty.' });
 
-      const answer = await askChatterMate(question, data);
+      const apiKey = typeof body.apiKey === 'string' ? body.apiKey : '';
+      const answer = await askChatterMate(question, data, apiKey);
       return sendJson(res, 200, { answer });
     } catch (error) {
       const statusCode = error.statusCode || 502;

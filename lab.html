@@ -183,9 +183,12 @@
 
     function showAlert(msg, type = 'success') {
       const box = document.getElementById('alertBox');
-      box.innerHTML = `<div class="alert alert-${type}">${msg}</div>`;
+      const alert = document.createElement('div');
+      alert.className = 'alert alert-' + (type === 'error' ? 'danger' : 'success');
+      alert.textContent = msg;
+      box.replaceChildren(alert);
       setTimeout(() => {
-        box.innerHTML = '';
+        box.replaceChildren();
       }, 5000);
     }
 
@@ -315,17 +318,17 @@
         const isDone = o.status === 'Done';
         const badgeClass = isDone ? 'badge-success' : 'badge-warning';
         const resultDisplay = isDone 
-          ? `<strong>${escapeHtml(o.result || 'Completed')}</strong> <br><small class="text-muted">(${formatDate(o.doneDate)})</small>` 
+          ? `<strong>${escapeHtml(o.result || 'Completed')}</strong> <br><small class="text-muted">(${escapeHtml(formatDate(o.doneDate))})</small>`
           : `<span class="text-muted">Awaiting lab analysis</span>`;
 
         const actionBtn = isDone
           ? `<span style="color: var(--green); font-weight: 600;">âœ“ Ready</span>`
-          : `<button type="button" class="btn btn-secondary btn-sm" onclick="openResultModal('${o.id}', '${escapeHtml(o.testName)}', '${escapeHtml(getPatientName(o.patientId))}')">âœï¸ Enter Result</button>`;
+          : `<button type="button" class="btn btn-secondary btn-sm" data-order-id="${escapeHtml(o.id)}">Enter Result</button>`;
 
         return `
           <tr>
             <td><strong>${escapeHtml(o.id)}</strong></td>
-            <td>${formatDate(o.date)}</td>
+            <td>${escapeHtml(formatDate(o.date))}</td>
             <td>${escapeHtml(getPatientName(o.patientId))} <br><small class="text-muted">${escapeHtml(o.patientId)}</small></td>
             <td><strong>${escapeHtml(o.testName)}</strong></td>
             <td class="text-right">${formatMoney(o.price)}</td>
@@ -336,6 +339,13 @@
         `;
       }).join('');
     }
+
+    document.getElementById('ordersTableBody').addEventListener('click', function (event) {
+      const button = event.target.closest('[data-order-id]');
+      if (!button) return;
+      const order = load('hms_labOrders').find(item => item.id === button.dataset.orderId);
+      if (order) openResultModal(order.id, order.testName, getPatientName(order.patientId));
+    });
 
     function openResultModal(orderId, testName, patientName) {
       document.getElementById('modalOrderId').value = orderId;

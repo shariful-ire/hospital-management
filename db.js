@@ -173,6 +173,11 @@
     return null;
   }
 
+  // Returns nurses and other hospital employees stored in localStorage.
+  function getStaff() {
+    return load('hms_staff');
+  }
+
   // ============================================================
   // à§­. à¦°à§‹à¦—à§€ à¦¯à§‹à¦— à¦•à¦°à¦¾
   // ============================================================
@@ -423,6 +428,7 @@
   window.escapeHtml = escapeHtml;
   window.getPatientName = getPatientName;
   window.getDoctor = getDoctor;
+  window.getStaff = getStaff;
   window.addPatient = addPatient;
   window.addVisit = addVisit;
   window.addLabOrder = addLabOrder;

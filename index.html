@@ -131,6 +131,20 @@
           </div>
         </section>
 
+        <section class="card">
+          <div class="card-header">
+            <h2 class="card-title">Hospital Staff</h2><span class="badge badge-info" id="staffCount">0 staff members</span>
+          </div>
+          <div class="card-body p-0">
+            <div class="table-scroll">
+              <table class="table">
+                <thead><tr><th>Staff Name</th><th>Role / Department</th><th>Shift</th><th>Status</th></tr></thead>
+                <tbody id="staffSummaryBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
         <!-- à¦¸à¦¿à¦¸à§à¦Ÿà§‡à¦® à¦¤à¦¥à§à¦¯ -->
         <section class="card">
           <div class="card-header">
@@ -179,6 +193,7 @@
 
       var patients = load('hms_patients');
       var doctors = load('hms_doctors');
+      var staff = typeof getStaff === 'function' ? getStaff() : load('hms_staff');
       var visits = load('hms_visits');
       var labOrders = load('hms_labOrders');
       var charges = load('hms_charges');
@@ -252,6 +267,22 @@
                          '<td>' + formatMoney(doc.fee) + '</td>';
           docBody.appendChild(tr);
         }
+      }
+
+      var staffBody = document.getElementById('staffSummaryBody');
+      document.getElementById('staffCount').textContent = staff.length + (staff.length === 1 ? ' staff member' : ' staff members');
+      staffBody.innerHTML = '';
+      if (staff.length === 0) {
+        staffBody.innerHTML = '<tr><td colspan="4" class="text-center text-muted" style="padding:16px;">No staff demo data. Use Load Sample Data.</td></tr>';
+      } else {
+        staff.forEach(function (member) {
+          var row = document.createElement('tr');
+          row.innerHTML = '<td><strong>' + escapeHtml(member.name) + '</strong> (' + escapeHtml(member.id) + ')</td>' +
+            '<td>' + escapeHtml(member.role) + ' / ' + escapeHtml(member.department) + '</td>' +
+            '<td>' + escapeHtml(member.shift) + '</td>' +
+            '<td><span class="badge ' + (member.status === 'Off duty' ? 'badge-warning' : 'badge-success') + '">' + escapeHtml(member.status || 'On duty') + '</span></td>';
+          staffBody.appendChild(row);
+        });
       }
     }
   </script>

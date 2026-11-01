@@ -126,13 +126,13 @@
 
             <section class="settings-card" aria-labelledby="aiTitle">
               <div class="card-heading"><div><h2 id="aiTitle">AI report assistant</h2></div><span class="connection-pill" id="connectionState">Checking</span></div>
-              <p class="card-kicker">Enter your ChatterMate API key to connect. It is sent to the server for validation and is never saved in browser storage.</p>
+              <p class="card-kicker">Paste your ChatterMate API key here. After validation, it stays in this browser tab only and is sent to the server when you ask a question.</p>
               <form id="aiForm" autocomplete="off">
                 <div class="settings-field"><label for="apiKeyInput">ChatterMate API key</label><input id="apiKeyInput" name="apiKey" type="password" placeholder="Paste your API key" autocomplete="new-password" required></div>
                 <div class="actions"><button class="btn btn-primary" id="connectButton" type="submit">Connect AI</button><button class="btn btn-secondary" id="checkConnection" type="button">Check status</button><button class="btn btn-danger" id="disconnectButton" type="button">Disconnect</button></div>
               </form>
               <div class="status-line" id="aiStatus" role="status" aria-live="polite">Checking server connectionâ€¦</div>
-              <p class="security-note">The key stays in server memory for this local session. For deployment, configure it as a server environment variable. Never share your key.</p>
+              <p class="security-note">The key is not saved to your account or localStorage. Closing this browser tab clears it. Use the app over HTTPS and never share your key.</p>
             </section>
           </div>
 
@@ -172,19 +172,24 @@
     (function () {
       'use strict';
       var DATA_KEYS = [
-        ['hms_patients', 'Patients'], ['hms_doctors', 'Doctors'], ['hms_visits', 'Visits'],
+        ['hms_patients', 'Patients'], ['hms_doctors', 'Doctors'], ['hms_staff', 'Staff'], ['hms_visits', 'Visits'],
         ['hms_labOrders', 'Lab orders'], ['hms_charges', 'Charges'], ['hms_payments', 'Payments']
       ];
       var PROFILE_KEY = 'hms_hospital_profile';
       DATA_KEYS.push(['hms_settings', 'Workspace settings']);
       var THEME_KEY = 'hms_theme';
+      var AI_SESSION_KEY = 'hms_chattermate_key';
+      var aiHost = 'unknown';
       var PROFILE_DEFAULTS = { hospitalName: 'LifeBridge Hospital', hospitalPhone: '', hospitalEmail: '', hospitalAddress: '', receiptFooter: '' };
       var $ = function (id) { return document.getElementById(id); };
 
       function safeJson(response) {
         return response.text().then(function (text) {
           if (!text.trim()) throw new Error('Server returned an empty response.');
-          try { return JSON.parse(text); } catch (_) { throw new Error('Server returned an invalid response.'); }
+          try { return JSON.parse(text); } catch (_) {
+            var preview = text.slice(0, 160).replace(/\s+/g, ' ');
+            throw new Error('Server returned an invalid response (HTTP ' + response.status + '). ' + preview);
+          }
         });
       }
       function setStatus(element, message, kind) {
@@ -249,17 +254,24 @@
         badge.textContent = 'Checking'; badge.className = 'connection-pill';
         return fetch('/api/status', { method: 'GET', cache: 'no-store' })
           .then(safeJson).then(function (data) {
-            if (data.keyConfigured || data.connected) {
+            aiHost = data.host || 'vercel';
+            $('aiForm').style.display = '';
+            var tabHasKey = false;
+            try { tabHasKey = Boolean(sessionStorage.getItem(AI_SESSION_KEY)); } catch (_) {}
+            if (tabHasKey) {
+              badge.textContent = 'Connected for this tab'; badge.className = 'connection-pill connected';
+              setStatus($('aiStatus'), 'Your key is validated and available in this browser tab.', 'success');
+            } else if (data.keyConfigured || data.connected) {
               badge.textContent = 'Connected'; badge.className = 'connection-pill connected';
-              setStatus($('aiStatus'), 'AI is connected. The server key is configured and is never sent to this page.', 'success');
+              setStatus($('aiStatus'), 'A server API key is configured. You can also paste your own key for this browser tab.', 'success');
             } else {
               badge.textContent = 'Not connected'; badge.className = 'connection-pill offline';
-              setStatus($('aiStatus'), 'No API key is set on the server. Add CHATTERMATE_API_KEY to your .env file or deployment environment variables.', '');
+              setStatus($('aiStatus'), 'Paste your ChatterMate key above and select Connect AI.', '');
             }
             return data;
           }).catch(function (error) {
             badge.textContent = 'Server unavailable'; badge.className = 'connection-pill offline';
-            setStatus($('aiStatus'), 'Could not reach server.js. Start the local server and refresh. ' + error.message, 'error');
+            setStatus($('aiStatus'), 'AI API route is missing on this host. Deploy this project on Vercel with the api folder at the project root, or run node server.js locally. ' + error.message, 'error');
             return null;
           });
       }
@@ -310,7 +322,7 @@
         reader.readAsText(file);
       }
       function clearHospitalData() {
-        if (!window.confirm('Delete all hospital patients, doctors, visits, lab orders, charges, and payments from this browser? This cannot be undone.')) return;
+        if (!window.confirm('Delete all hospital patients, doctors, staff, visits, lab orders, charges, and payments from this browser? This cannot be undone.')) return;
         DATA_KEYS.forEach(function (entry) { localStorage.removeItem(entry[0]); });
         localStorage.removeItem(PROFILE_KEY);
         localStorage.removeItem(THEME_KEY);
@@ -342,20 +354,25 @@
           if (!key) { setStatus($('aiStatus'), 'Enter your API key first.', 'error'); return; }
           $('connectButton').disabled = true;
           setStatus($('aiStatus'), 'Checking API key with ChatterMate...', '');
-          fetch('/api/settings/connect', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ apiKey: key }) })
+          fetch('/api/connect', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ apiKey: key }) })
             .then(safeJson).then(function (result) {
               if (result.error) throw new Error(result.error);
+              sessionStorage.setItem(AI_SESSION_KEY, key);
               $('apiKeyInput').value = '';
-              $('connectionState').textContent = 'Connected'; $('connectionState').className = 'connection-pill connected';
-              setStatus($('aiStatus'), 'Connected. The key is held in server memory only.', 'success');
+              $('connectionState').textContent = 'Connected for this tab'; $('connectionState').className = 'connection-pill connected';
+              setStatus($('aiStatus'), 'Connected. Your key is available to AI chat in this browser tab until it closes.', 'success');
             }).catch(function (error) { setStatus($('aiStatus'), error.message || 'Could not connect.', 'error'); })
             .finally(function () { $('connectButton').disabled = false; });
         });
         $('disconnectButton').addEventListener('click', function () {
-          fetch('/api/settings/disconnect', { method: 'POST' }).then(safeJson).then(function (result) {
+          try { sessionStorage.removeItem(AI_SESSION_KEY); } catch (_) {}
+          var clearServerKey = aiHost === 'local'
+            ? fetch('/api/settings/disconnect', { method: 'POST' }).then(safeJson)
+            : Promise.resolve({});
+          clearServerKey.then(function (result) {
             if (result.error) throw new Error(result.error);
             $('connectionState').textContent = 'Not connected'; $('connectionState').className = 'connection-pill offline';
-            setStatus($('aiStatus'), result.message || 'Disconnected.', 'success');
+            setStatus($('aiStatus'), 'This tab key was cleared.', 'success');
           }).catch(function (error) { setStatus($('aiStatus'), error.message || 'Could not disconnect.', 'error'); });
         });
       });

@@ -57,6 +57,14 @@ async function getDefaultModelId(apiKey) {
   return cachedModelId;
 }
 
+async function validateKey(apiKey) {
+  if (typeof apiKey !== 'string' || !apiKey.trim()) {
+    throw Object.assign(new Error('Enter your ChatterMate API key.'), { statusCode: 400 });
+  }
+  await getDefaultModelId(apiKey.trim());
+  return true;
+}
+
 // à¦¬à¦¾à¦‚à¦²à¦¾: "event: model_chunk"-à¦à¦° à¦ªà¦°à§‡à¦° data à¦²à¦¾à¦‡à¦¨à§‡à¦° content à¦œà§‹à¦¡à¦¼à¦¾ à¦²à¦¾à¦—à¦¿à¦¯à¦¼à§‡ à¦‰à¦¤à§à¦¤à¦° à¦¬à¦¾à¦¨à¦¾à¦¯à¦¼
 function parseModelChunkStream(rawText) {
   const normalized = rawText.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
@@ -77,10 +85,10 @@ function parseModelChunkStream(rawText) {
   return answer.trim();
 }
 
-async function ask(question, data) {
-  const key = getKey();
+async function ask(question, data, providedKey) {
+  const key = (typeof providedKey === 'string' && providedKey.trim()) || getKey();
   if (!key) {
-    throw Object.assign(new Error('AI is not connected. Add CHATTERMATE_API_KEY in Vercel > Project Settings > Environment Variables, then redeploy.'), { statusCode: 400 });
+    throw Object.assign(new Error('AI is not connected. Paste your ChatterMate API key in Settings and select Connect AI.'), { statusCode: 400 });
   }
   const modelId = await getDefaultModelId(key);
   const response = await requestChatterMate(key, 'POST', '/api/chat/stream', {
@@ -99,4 +107,4 @@ async function ask(question, data) {
   return answer;
 }
 
-module.exports = { getKey, ask };
+module.exports = { getKey, ask, validateKey };
