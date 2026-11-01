@@ -6,7 +6,7 @@
   <title>Reports - LifeBridge Hospital</title>
   <link rel="stylesheet" href="style.css">
   <style>
-    /* à¦Ÿà§à¦¯à¦¾à¦¬ à¦¨à§‡à¦­à¦¿à¦—à§‡à¦¶à¦¨ à¦¸à§à¦Ÿà¦¾à¦‡à¦² */
+    /* ট্যাব নেভিগেশন স্টাইল */
     .tab-bar {
       display: flex;
       gap: 8px;
@@ -39,7 +39,7 @@
       border-radius: var(--radius) var(--radius) 0 0;
     }
 
-    /* à¦«à¦¿à¦²à§à¦Ÿà¦¾à¦° à¦Ÿà§à¦²à¦¬à¦¾à¦° */
+    /* ফিল্টার টুলবার */
     .report-filter-bar {
       display: flex;
       gap: 16px;
@@ -56,7 +56,7 @@
       min-width: 160px;
     }
 
-    /* à¦ªà§à¦°à¦¿à¦¨à§à¦Ÿ à¦¹à§‡à¦¡à¦¾à¦°à§‡à¦° à¦²à§à¦•à¦¾à¦¨à§‹ à¦…à¦‚à¦¶ (à¦¸à¦¾à¦§à¦¾à¦°à¦£ à¦¸à§à¦•à§à¦°à¦¿à¦¨à§‡ à¦¦à§‡à¦–à¦¾à¦¬à§‡ à¦¨à¦¾) */
+    /* প্রিন্ট হেডারের লুকানো অংশ (সাধারণ স্ক্রিনে দেখাবে না) */
     .print-header {
       display: none;
       margin-bottom: 24px;
@@ -80,7 +80,7 @@
       color: #555;
     }
 
-    /* à¦¬à§‹à¦²à§à¦¡ à¦Ÿà§‹à¦Ÿà¦¾à¦² à¦°à§‹ à¦¹à¦¾à¦‡à¦²à¦¾à¦‡à¦Ÿ */
+    /* বোল্ড টোটাল রো হাইলাইট */
     .total-row {
       font-weight: 800;
       background-color: #f1f5f9 !important;
@@ -92,7 +92,7 @@
       font-size: 14px;
     }
 
-    /* à¦¡à§‡à¦‡à¦²à¦¿à¦° à¦œà¦¨à§à¦¯ à¦Ÿà§‹à¦Ÿà¦¾à¦² à¦¡à¦¿à¦‰ à¦¹à¦¾à¦‡à¦²à¦¾à¦‡à¦Ÿ à¦•à¦¾à¦°à§à¦¡ */
+    /* ডেইলির জন্য টোটাল ডিউ হাইলাইট কার্ড */
     .due-stat-banner {
       background: #fff7ed;
       border: 1px solid #fed7aa;
@@ -111,7 +111,7 @@
       color: #c2410c;
     }
 
-    /* à¦«à¦¾à¦à¦•à¦¾ à¦¡à§‡à¦Ÿà¦¾ à¦¬à¦¾à¦°à§à¦¤à¦¾ */
+    /* ফাঁকা ডেটা বার্তা */
     .no-data-msg {
       text-align: center;
       padding: 32px 16px;
@@ -119,7 +119,7 @@
       font-style: italic;
     }
 
-    /* @media print à¦°à§à¦²à¦¸: à¦ªà§à¦°à¦¿à¦¨à§à¦Ÿ à¦•à¦°à¦¾à¦° à¦¸à¦®à§Ÿ à¦¶à§à¦§à§ à¦°à¦¿à¦ªà§‹à¦°à§à¦Ÿ à¦¥à¦¾à¦•à¦¬à§‡ */
+    /* @media print রুলস: প্রিন্ট করার সময় শুধু রিপোর্ট থাকবে */
     @media print {
       body {
         background: #fff !important;
@@ -176,19 +176,19 @@
 <body>
 
   <div class="layout">
-    <!-- à¦¬à¦¾à¦à¦¦à¦¿à¦•à§‡à¦° à¦—à§à¦²à§‹à¦¬à¦¾à¦² à¦¸à¦¾à¦‡à¦¡à¦¬à¦¾à¦° -->
+    <!-- বাঁদিকের গ্লোবাল সাইডবার -->
     <aside id="sidebar" class="sidebar"></aside>
 
-    <!-- à¦®à§‚à¦² à¦•à¦¨à¦Ÿà§‡à¦¨à§à¦Ÿ à¦à¦²à¦¾à¦•à¦¾ -->
+    <!-- মূল কনটেন্ট এলাকা -->
     <main class="main-content">
       
-      <!-- à¦…à¦¨à¦¸à§à¦•à§à¦°à¦¿à¦¨ à¦ªà§‡à¦œ à¦¹à§‡à¦¡à¦¾à¦° -->
+      <!-- অনস্ক্রিন পেজ হেডার -->
       <div class="page-header">
-        <h1 class="page-title">ðŸ“Š Financial & Operational Reports</h1>
+        <h1 class="page-title">📊 Financial & Operational Reports</h1>
         <p class="page-desc">Audit hospital revenue collections, track patient footfall, and review doctor/lab performance.</p>
       </div>
 
-      <!-- à¦ªà§à¦°à¦¿à¦¨à§à¦Ÿà§‡à¦° à¦¸à¦®à§Ÿ à¦¦à§‡à¦–à¦¾à¦¨à§‹à¦° à¦¬à¦¿à¦¶à§‡à¦· à¦…à¦«à¦¿à¦¶à¦¿à§Ÿà¦¾à¦² à¦¹à§‡à¦¡à¦¾à¦° -->
+      <!-- প্রিন্টের সময় দেখানোর বিশেষ অফিশিয়াল হেডার -->
       <div class="print-header">
         <h1>LifeBridge Hospital</h1>
         <h2 id="printReportTitle">Hospital Report</h2>
@@ -196,23 +196,23 @@
         <p style="font-size:11px; margin-top:2px;">Printed on: <span id="printGeneratedOn"></span></p>
       </div>
 
-      <!-- à¦Ÿà§à¦¯à¦¾à¦¬ à¦®à§‡à¦¨à§ (à¦šà¦¾à¦°à¦Ÿà¦¿ à¦°à¦¿à¦ªà§‹à¦°à§à¦Ÿ) -->
+      <!-- ট্যাব মেনু (চারটি রিপোর্ট) -->
       <nav class="tab-bar" role="tablist">
         <button type="button" class="tab-btn active" id="tabBtn-daily" onclick="switchTab('daily')">
-          ðŸ’µ Daily Collection
+          💵 Daily Collection
         </button>
         <button type="button" class="tab-btn" id="tabBtn-patients" onclick="switchTab('patients')">
-          ðŸ‘¥ Patient Registration List
+          👥 Patient Registration List
         </button>
         <button type="button" class="tab-btn" id="tabBtn-doctors" onclick="switchTab('doctors')">
-          ðŸ‘¨â€âš•ï¸ Doctor-wise Visits & Fees
+          👨‍⚕️ Doctor-wise Visits & Fees
         </button>
         <button type="button" class="tab-btn" id="tabBtn-lab" onclick="switchTab('lab')">
-          ðŸ§ª Lab Tests Summary
+          🧪 Lab Tests Summary
         </button>
       </nav>
 
-      <!-- à¦«à¦¿à¦²à§à¦Ÿà¦¾à¦° à¦Ÿà§à¦²à¦¬à¦¾à¦° (à¦¤à¦¾à¦°à¦¿à¦– à¦¸à¦¿à¦²à§‡à¦•à¦¶à¦¨ à¦“ à¦ªà§à¦°à¦¿à¦¨à§à¦Ÿ à¦¬à¦¾à¦Ÿà¦¨) -->
+      <!-- ফিল্টার টুলবার (তারিখ সিলেকশন ও প্রিন্ট বাটন) -->
       <div class="report-filter-bar">
         <div class="form-group">
           <label for="fromDate">From Date:</label>
@@ -232,52 +232,52 @@
 
         <div style="margin-left: auto;">
           <button type="button" class="btn btn-secondary" onclick="triggerPrint()">
-            ðŸ–¨ï¸ Print Report
+            🖨️ Print Report
           </button>
         </div>
       </div>
 
-      <!-- à¦°à¦¿à¦ªà§‹à¦°à§à¦Ÿ à¦•à¦¨à¦Ÿà§‡à¦¨à§à¦Ÿ à¦•à¦¾à¦°à§à¦¡ -->
+      <!-- রিপোর্ট কনটেন্ট কার্ড -->
       <div class="card" id="reportDisplayCard">
         <div id="reportContainer">
-          <!-- à¦¡à¦¾à§Ÿà¦¨à¦¾à¦®à¦¿à¦• à¦œà¦¾à¦­à¦¾à¦¸à§à¦•à§à¦°à¦¿à¦ªà§à¦Ÿ à¦¦à¦¿à§Ÿà§‡ à¦à¦–à¦¾à¦¨à§‡ à¦Ÿà§‡à¦¬à¦¿à¦² à¦“ à¦¡à§‡à¦Ÿà¦¾ à¦¤à§ˆà¦°à¦¿ à¦¹à¦¬à§‡ -->
+          <!-- ডায়নামিক জাভাস্ক্রিপ্ট দিয়ে এখানে টেবিল ও ডেটা তৈরি হবে -->
         </div>
       </div>
 
     </main>
   </div>
 
-  <!-- à¦ªà§à¦°à§Ÿà§‹à¦œà¦¨à§€à§Ÿ à¦œà¦¾à¦­à¦¾à¦¸à§à¦•à§à¦°à¦¿à¦ªà§à¦Ÿ à¦«à¦¾à¦‡à¦²à¦—à§à¦²à§‹ à¦²à§‹à¦¡ à¦•à¦°à¦¾ -->
+  <!-- প্রয়োজনীয় জাভাস্ক্রিপ্ট ফাইলগুলো লোড করা -->
   <script src="db.js"></script>
   <script src="reports.js"></script>
   <script>
-    // à¦•à§‹à¦¨ à¦Ÿà§à¦¯à¦¾à¦¬ à¦à¦–à¦¨ à¦¸à¦•à§à¦°à¦¿à§Ÿ à¦°à§Ÿà§‡à¦›à§‡ à¦¤à¦¾ à¦Ÿà§à¦°à§à¦¯à¦¾à¦• à¦•à¦°à¦¾
+    // কোন ট্যাব এখন সক্রিয় রয়েছে তা ট্র্যাক করা
     let activeTab = 'daily';
 
-    // à¦ªà§‡à¦œ à¦²à§‹à¦¡ à¦¹à¦²à§‡ à¦¸à¦¾à¦‡à¦¡à¦¬à¦¾à¦° à¦à¦¬à¦‚ à¦°à¦¿à¦ªà§‹à¦°à§à¦Ÿ à¦¶à§à¦°à§ à¦¹à¦¬à§‡
+    // পেজ লোড হলে সাইডবার এবং রিপোর্ট শুরু হবে
     document.addEventListener('DOMContentLoaded', function() {
-      // à¦¸à¦¾à¦‡à¦¡à¦¬à¦¾à¦° à¦¦à§‡à¦–à¦¾à¦¨à§‹
+      // সাইডবার দেখানো
       renderSidebar('reports');
 
-      // à¦¤à¦¾à¦°à¦¿à¦– à¦‡à¦¨à¦¿à¦¶à¦¿à§Ÿà¦¾à¦²à¦¾à¦‡à¦œà§‡à¦¶à¦¨: à¦šà¦²à¦¤à¦¿ à¦®à¦¾à¦¸à§‡à¦° à§§ à¦¤à¦¾à¦°à¦¿à¦– à¦¥à§‡à¦•à§‡ à¦†à¦œ à¦ªà¦°à§à¦¯à¦¨à§à¦¤
+      // তারিখ ইনিশিয়ালাইজেশন: চলতি মাসের ১ তারিখ থেকে আজ পর্যন্ত
       document.getElementById('fromDate').value = monthStartStr();
       document.getElementById('toDate').value = todayStr();
 
-      // à¦ªà§‚à¦°à§à¦¬à§‡ à¦¨à¦¿à¦°à§à¦¬à¦¾à¦šà¦¨ à¦•à¦°à¦¾ à¦Ÿà§à¦¯à¦¾à¦¬ à¦¥à¦¾à¦•à¦²à§‡ à¦¸à§‡à¦Ÿà¦¿ à¦«à¦¿à¦°à¦¿à§Ÿà§‡ à¦†à¦¨à¦¾ (localStorage à¦¥à§‡à¦•à§‡)
+      // পূর্বে নির্বাচন করা ট্যাব থাকলে সেটি ফিরিয়ে আনা (localStorage থেকে)
       const savedTab = localStorage.getItem('hms_activeReportTab');
       if (savedTab && ['daily', 'patients', 'doctors', 'lab'].includes(savedTab)) {
         activeTab = savedTab;
       }
 
-      // à¦¸à¦•à§à¦°à¦¿à§Ÿ à¦Ÿà§à¦¯à¦¾à¦¬à§‡à¦° à¦¬à§‹à¦¤à¦¾à¦®à§‡ active à¦•à§à¦²à¦¾à¦¸ à¦¦à§‡à¦“à§Ÿà¦¾
+      // সক্রিয় ট্যাবের বোতামে active ক্লাস দেওয়া
       updateTabButtons();
 
-      // à¦°à¦¿à¦ªà§‹à¦°à§à¦Ÿ à¦ªà§à¦°à¦¦à¦°à§à¦¶à¦¨ à¦•à¦°à¦¾
+      // রিপোর্ট প্রদর্শন করা
       runCurrentReport();
     });
 
     /**
-     * à¦Ÿà§à¦¯à¦¾à¦¬ à¦ªà¦°à¦¿à¦¬à¦°à§à¦¤à¦¨ à¦•à¦°à¦¾ à¦à¦¬à¦‚ à¦†à¦—à§‡à¦° à¦ªà¦›à¦¨à§à¦¦ à¦®à¦¨à§‡ à¦°à¦¾à¦–à¦¾
+     * ট্যাব পরিবর্তন করা এবং আগের পছন্দ মনে রাখা
      */
     function switchTab(tabKey) {
       activeTab = tabKey;
@@ -287,7 +287,7 @@
     }
 
     /**
-     * à¦Ÿà§à¦¯à¦¾à¦¬à§‡à¦° à¦¬à¦¾à¦Ÿà¦¨à§‡à¦° à¦°à¦‚ à¦¹à¦¾à¦²à¦¨à¦¾à¦—à¦¾à¦¦ à¦•à¦°à¦¾
+     * ট্যাবের বাটনের রং হালনাগাদ করা
      */
     function updateTabButtons() {
       ['daily', 'patients', 'doctors', 'lab'].forEach(t => {
@@ -303,14 +303,14 @@
     }
 
     /**
-     * à¦¬à¦°à§à¦¤à¦®à¦¾à¦¨ à¦…à§à¦¯à¦¾à¦•à§à¦Ÿà¦¿à¦­ à¦Ÿà§à¦¯à¦¾à¦¬à§‡à¦° à¦°à¦¿à¦ªà§‹à¦°à§à¦Ÿ à¦°à¦¾à¦¨ à¦•à¦°à¦¾
+     * বর্তমান অ্যাক্টিভ ট্যাবের রিপোর্ট রান করা
      */
     function runCurrentReport() {
       const from = document.getElementById('fromDate').value;
       const to = document.getElementById('toDate').value;
       const container = document.getElementById('reportContainer');
 
-      // à¦ªà§à¦°à¦¿à¦¨à§à¦Ÿ à¦¹à§‡à¦¡à¦¾à¦°à§‡à¦° à¦¶à¦¿à¦°à§‹à¦¨à¦¾à¦® à¦“ à¦¤à¦¥à§à¦¯ à¦¸à§‡à¦Ÿ à¦•à¦°à¦¾
+      // প্রিন্ট হেডারের শিরোনাম ও তথ্য সেট করা
       updatePrintHeader(from, to);
 
       if (!from || !to) {
@@ -318,13 +318,13 @@
         return;
       }
 
-      // à¦¤à¦¾à¦°à¦¿à¦– à¦‰à¦²à§à¦Ÿà§‹ à¦¹à¦²à§‡ à¦¸à¦‚à¦¶à§‹à¦§à¦¨
+      // তারিখ উল্টো হলে সংশোধন
       if (from > to) {
         container.innerHTML = '<div class="alert alert-danger">"From Date" cannot be after "To Date"!</div>';
         return;
       }
 
-      // à¦¸à¦•à§à¦°à¦¿à§Ÿ à¦Ÿà§à¦¯à¦¾à¦¬ à¦…à¦¨à§à¦¯à¦¾à§Ÿà§€ à¦¨à¦¿à¦°à§à¦¦à¦¿à¦·à§à¦Ÿ à¦°à¦¿à¦ªà§‹à¦°à§à¦Ÿ à¦°à§‡à¦¨à§à¦¡à¦¾à¦°
+      // সক্রিয় ট্যাব অনুযায়ী নির্দিষ্ট রিপোর্ট রেন্ডার
       switch (activeTab) {
         case 'daily':
           renderDailyCollectionTab(from, to, container);
@@ -342,7 +342,7 @@
     }
 
     /**
-     * à¦ªà§à¦°à¦¿à¦¨à§à¦Ÿ à¦¹à§‡à¦¡à¦¾à¦°à§‡à¦° à¦œà¦¨à§à¦¯ à¦²à§‡à¦–à¦¾ à¦¸à§‡à¦Ÿ à¦•à¦°à¦¾
+     * প্রিন্ট হেডারের জন্য লেখা সেট করা
      */
     function updatePrintHeader(from, to) {
       const titleElem = document.getElementById('printReportTitle');
@@ -362,10 +362,10 @@
     }
 
     /**
-     * à§§. Daily Collection à¦°à¦¿à¦ªà§‹à¦°à§à¦Ÿ
+     * ১. Daily Collection রিপোর্ট
      */
     function renderDailyCollectionTab(from, to, container) {
-      // reports.js-à¦à¦° pure calculation à¦«à¦¾à¦‚à¦¶à¦¨ à¦•à¦²
+      // reports.js-এর pure calculation ফাংশন কল
       const data = getDailyCollection(from, to);
 
       let html = `
@@ -413,7 +413,7 @@
         `;
       });
 
-      // à¦¬à§‹à¦²à§à¦¡ à¦Ÿà§‹à¦Ÿà¦¾à¦² à¦°à§‹ (à¦¨à¦¿à¦šà§‡)
+      // বোল্ড টোটাল রো (নিচে)
       html += `
             </tbody>
             <tfoot>
@@ -432,7 +432,7 @@
     }
 
     /**
-     * à§¨. Patient Registration List à¦°à¦¿à¦ªà§‹à¦°à§à¦Ÿ
+     * ২. Patient Registration List রিপোর্ট
      */
     function renderPatientsTab(from, to, container) {
       const data = getPatientsInRange(from, to);
@@ -494,7 +494,7 @@
     }
 
     /**
-     * à§©. Doctor-wise Visits & Fees à¦°à¦¿à¦ªà§‹à¦°à§à¦Ÿ
+     * ৩. Doctor-wise Visits & Fees রিপোর্ট
      */
     function renderDoctorTab(from, to, container) {
       const data = getDoctorReport(from, to);
@@ -556,7 +556,7 @@
     }
 
     /**
-     * à§ª. Lab Tests Summary à¦°à¦¿à¦ªà§‹à¦°à§à¦Ÿ
+     * ৪. Lab Tests Summary রিপোর্ট
      */
     function renderLabTab(from, to, container) {
       const data = getLabReport(from, to);
@@ -620,7 +620,7 @@
     }
 
     /**
-     * à¦¬à§à¦°à¦¾à¦‰à¦œà¦¾à¦°à§‡à¦° à¦ªà§à¦°à¦¿à¦¨à§à¦Ÿ à¦¡à¦¾à§Ÿà¦¾à¦²à¦— à¦šà¦¾à¦²à§ à¦•à¦°à¦¾
+     * ব্রাউজারের প্রিন্ট ডায়ালগ চালু করা
      */
     function triggerPrint() {
       window.print();

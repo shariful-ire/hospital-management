@@ -1,5 +1,5 @@
-﻿// server.js â€” LifeBridge Hospital-à¦à¦° à¦²à§‹à¦•à¦¾à¦² à¦“à§Ÿà§‡à¦¬ à¦¸à¦¾à¦°à§à¦­à¦¾à¦° à¦“ AI à¦šà§à¦¯à¦¾à¦Ÿ à¦¬à§à¦¯à¦¾à¦•à¦à¦¨à§à¦¡
-// à¦¬à¦¾à¦‚à¦²à¦¾: Node.js-à¦à¦° built-in module à¦¬à§à¦¯à¦¬à¦¹à¦¾à¦° à¦•à¦°à¦¾ à¦¹à§Ÿà§‡à¦›à§‡; à¦•à§‹à¦¨à§‹ npm package à¦²à¦¾à¦—à§‡ à¦¨à¦¾à¥¤
+﻿// server.js — LifeBridge Hospital-এর লোকাল ওয়েব সার্ভার ও AI চ্যাট ব্যাকএন্ড
+// বাংলা: Node.js-এর built-in module ব্যবহার করা হয়েছে; কোনো npm package লাগে না।
 
 'use strict';
 
@@ -8,7 +8,7 @@ const fs = require('fs');
 const path = require('path');
 const https = require('https');
 
-// à¦¬à¦¾à¦‚à¦²à¦¾: .env à¦«à¦¾à¦‡à¦² à¦¥à¦¾à¦•à¦²à§‡ à¦¸à§‡à¦–à¦¾à¦¨ à¦¥à§‡à¦•à§‡à¦“ à¦•à§€ à¦ªà§œà¦¾à¦° à¦¸à§à¦¬à§Ÿà¦‚à¦•à§à¦°à¦¿à§Ÿ à¦¬à§à¦¯à¦¬à¦¸à§à¦¥à¦¾
+// বাংলা: .env ফাইল থাকলে সেখান থেকেও কী পড়ার স্বয়ংক্রিয় ব্যবস্থা
 function loadDotEnvIfExists() {
   try {
     const envPath = path.join(__dirname, '.env');
@@ -221,7 +221,7 @@ function parseModelChunkStream(rawText) {
 async function askChatterMate(question, data, providedKey) {
   const keyToUse = (typeof providedKey === 'string' && providedKey.trim()) || activeApiKey;
   if (!keyToUse) {
-    throw Object.assign(new Error('No API key is connected. Open Settings (âš™ï¸) and connect your ChatterMate API key.'), { statusCode: 400 });
+    throw Object.assign(new Error('No API key is connected. Open Settings (⚙️) and connect your ChatterMate API key.'), { statusCode: 400 });
   }
 
   if (!cachedModelId || keyToUse !== activeApiKey) {

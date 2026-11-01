@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Settings â€” LifeBridge Hospital</title>
+  <title>Settings — LifeBridge Hospital</title>
   <link rel="stylesheet" href="style.css">
   <style>
     :root { --settings-accent: #0f9f9a; }
@@ -92,13 +92,13 @@
             <h1>Workspace settings</h1>
             <p>Personalise the hospital workspace, manage the AI connection, and protect your local demo data.</p>
           </div>
-          <div class="hero-mark" aria-hidden="true">âš™ï¸</div>
+          <div class="hero-mark" aria-hidden="true">⚙️</div>
         </header>
 
         <div class="settings-layout">
           <div class="settings-stack">
             <section class="settings-card" aria-labelledby="profileTitle">
-              <div class="card-heading"><div><h2 id="profileTitle">Hospital profile</h2></div><span class="section-icon" aria-hidden="true">ðŸ¥</span></div>
+              <div class="card-heading"><div><h2 id="profileTitle">Hospital profile</h2></div><span class="section-icon" aria-hidden="true">🏥</span></div>
               <p class="card-kicker">These details are saved in this browser for workspace reference.</p>
               <form id="profileForm">
                 <div class="settings-form-grid">
@@ -114,7 +114,7 @@
             </section>
 
             <section class="settings-card" aria-labelledby="themeTitle">
-              <div class="card-heading"><div><h2 id="themeTitle">Appearance</h2></div><span class="section-icon" aria-hidden="true">ðŸŽ¨</span></div>
+              <div class="card-heading"><div><h2 id="themeTitle">Appearance</h2></div><span class="section-icon" aria-hidden="true">🎨</span></div>
               <p class="card-kicker">Choose a visual style for this browser. Your choice is remembered on this device.</p>
               <div class="theme-options" role="group" aria-label="Choose theme">
                 <button type="button" class="theme-choice" data-theme-choice="blue" aria-pressed="false"><span class="theme-swatch"><i style="background:#f8fafc"></i><i style="background:#0f2a4d"></i><i style="background:#2563eb"></i></span><strong>Hospital Blue</strong><small>Clean and familiar</small></button>
@@ -131,15 +131,15 @@
                 <div class="settings-field"><label for="apiKeyInput">ChatterMate API key</label><input id="apiKeyInput" name="apiKey" type="password" placeholder="Paste your API key" autocomplete="new-password" required></div>
                 <div class="actions"><button class="btn btn-primary" id="connectButton" type="submit">Connect AI</button><button class="btn btn-secondary" id="checkConnection" type="button">Check status</button><button class="btn btn-danger" id="disconnectButton" type="button">Disconnect</button></div>
               </form>
-              <div class="status-line" id="aiStatus" role="status" aria-live="polite">Checking server connectionâ€¦</div>
+              <div class="status-line" id="aiStatus" role="status" aria-live="polite">Checking server connection…</div>
               <p class="security-note">The key is not saved to your account or localStorage. Closing this browser tab clears it. Use the app over HTTPS and never share your key.</p>
             </section>
           </div>
 
           <aside class="settings-stack">
             <section class="settings-card" aria-labelledby="storageTitle">
-              <div class="card-heading"><div><h2 id="storageTitle">Local data overview</h2></div><span class="section-icon" aria-hidden="true">ðŸ’¾</span></div>
-              <p class="card-kicker">Records are stored in this browser's localStorageâ€”not in a shared hospital database.</p>
+              <div class="card-heading"><div><h2 id="storageTitle">Local data overview</h2></div><span class="section-icon" aria-hidden="true">💾</span></div>
+              <p class="card-kicker">Records are stored in this browser's localStorage—not in a shared hospital database.</p>
               <div class="storage-summary"><div><div class="small-label">Approx. browser storage used</div><div class="storage-number" id="storageUsed">0 KB</div></div><span class="badge badge-info" id="recordTotal">0 records</span></div>
               <div class="storage-track" role="progressbar" aria-label="Approximate local storage usage" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div class="storage-fill" id="storageFill"></div></div>
               <div class="record-list" id="recordList"></div>
@@ -148,15 +148,15 @@
             </section>
 
             <section class="settings-card" aria-labelledby="backupTitle">
-              <div class="card-heading"><div><h2 id="backupTitle">Backup &amp; restore</h2></div><span class="section-icon" aria-hidden="true">ðŸ“¦</span></div>
+              <div class="card-heading"><div><h2 id="backupTitle">Backup &amp; restore</h2></div><span class="section-icon" aria-hidden="true">📦</span></div>
               <p class="card-kicker">Export a JSON backup or restore a previously exported LifeBridge file.</p>
-              <div class="backup-actions"><button type="button" class="btn btn-primary" id="exportBackup">â¬‡ Export backup</button><button type="button" class="btn btn-secondary" id="chooseRestore">â¬† Restore from backup</button><input class="hidden-file" id="restoreFile" type="file" accept=".json,application/json" aria-label="Choose a JSON backup file"></div>
+              <div class="backup-actions"><button type="button" class="btn btn-primary" id="exportBackup">⬇ Export backup</button><button type="button" class="btn btn-secondary" id="chooseRestore">⬆ Restore from backup</button><input class="hidden-file" id="restoreFile" type="file" accept=".json,application/json" aria-label="Choose a JSON backup file"></div>
               <div class="status-line" id="backupStatus" role="status" aria-live="polite"></div>
               <p class="security-note">Restoring replaces the current patient, visit, lab, charge, and payment data in this browser. Make a backup first.</p>
             </section>
 
             <section class="settings-card danger-zone" aria-labelledby="resetTitle">
-              <div class="card-heading"><div><h2 id="resetTitle">Clear local records</h2></div><span class="section-icon" style="background:#fef2f2;color:#b91c1c" aria-hidden="true">âš ï¸</span></div>
+              <div class="card-heading"><div><h2 id="resetTitle">Clear local records</h2></div><span class="section-icon" style="background:#fef2f2;color:#b91c1c" aria-hidden="true">⚠️</span></div>
               <p class="card-kicker">Permanently remove the app's hospital records from this browser. This cannot be undone.</p>
               <button type="button" class="btn btn-danger" id="clearData" style="width:100%">Clear all hospital data</button>
               <div class="status-line" id="clearStatus" role="status" aria-live="polite"></div>
@@ -312,7 +312,7 @@
             if (data[PROFILE_KEY] && typeof data[PROFILE_KEY] === 'object' && !Array.isArray(data[PROFILE_KEY])) localStorage.setItem(PROFILE_KEY, JSON.stringify(data[PROFILE_KEY]));
             var restoredTheme = data.hms_settings && data.hms_settings.appearance && data.hms_settings.appearance.theme;
             if (['blue', 'emerald', 'dark-navy'].indexOf(restoredTheme) >= 0) localStorage.setItem(THEME_KEY, restoredTheme);
-            setStatus($('backupStatus'), 'Backup restored successfully. Refreshing this pageâ€¦', 'success');
+            setStatus($('backupStatus'), 'Backup restored successfully. Refreshing this page…', 'success');
             updateStorageOverview();
             setTimeout(function () { location.reload(); }, 700);
           } catch (error) { setStatus($('backupStatus'), error.message || 'Could not restore backup.', 'error'); }

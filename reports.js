@@ -1,24 +1,24 @@
-﻿// reports.js - à¦¬à¦¿à¦¶à§à¦¦à§à¦§ à¦¹à¦¿à¦¸à¦¾à¦¬-à¦¨à¦¿à¦•à¦¾à¦¶ à¦«à¦¾à¦‚à¦¶à¦¨à¦¸à¦®à§‚à¦¹ (Pure calculation functions)
-// à¦à¦‡ à¦«à¦¾à¦‡à¦²à§‡ à¦•à§‹à¦¨à§‹ DOM à¦¬à¦¾ HTML à¦•à§‹à¦¡ à¦¨à§‡à¦‡à¥¤ à¦¶à§à¦§à§ à¦¡à§‡à¦Ÿà¦¾ à¦ªà§à¦°à¦¸à§‡à¦¸à¦¿à¦‚à¥¤
-// chat.js à¦à¦‡ à¦«à¦¾à¦‚à¦¶à¦¨à¦—à§à¦²à§‹à¦‡ à¦¸à¦°à¦¾à¦¸à¦°à¦¿ à¦°à¦¿-à¦‡à¦‰à¦œ à¦•à¦°à¦¬à§‡, à¦¯à¦¾à¦¤à§‡ à¦¸à¦¬ à¦°à¦¿à¦ªà§‹à¦°à§à¦Ÿà§‡ à¦¸à¦‚à¦–à§à¦¯à¦¾ à¦¸à¦¬à¦¸à¦®à¦¯à¦¼ à¦¹à§à¦¬à¦¹à§ à¦®à§‡à¦²à§‡à¥¤
+﻿// reports.js - বিশুদ্ধ হিসাব-নিকাশ ফাংশনসমূহ (Pure calculation functions)
+// এই ফাইলে কোনো DOM বা HTML কোড নেই। শুধু ডেটা প্রসেসিং।
+// chat.js এই ফাংশনগুলোই সরাসরি রি-ইউজ করবে, যাতে সব রিপোর্টে সংখ্যা সবসময় হুবহু মেলে।
 
 /**
- * à§§. à¦¦à§ˆà¦¨à¦¿à¦• à¦†à¦¦à¦¾à§Ÿà§‡à¦° à¦¹à¦¿à¦¸à¦¾à¦¬ (Daily Collection Report)
- * @param {string} from - à¦¶à§à¦°à§ à¦¤à¦¾à¦°à¦¿à¦– YYYY-MM-DD
- * @param {string} to - à¦¶à§‡à¦· à¦¤à¦¾à¦°à¦¿à¦– YYYY-MM-DD
+ * ১. দৈনিক আদায়ের হিসাব (Daily Collection Report)
+ * @param {string} from - শুরু তারিখ YYYY-MM-DD
+ * @param {string} to - শেষ তারিখ YYYY-MM-DD
  * @returns {object} { rows: [{date, visits, lab, total}], totalVisits, totalLab, totalReceived, totalDue }
  */
 function getDailyCollection(from, to) {
-  // hms_payments à¦¥à§‡à¦•à§‡ à¦¸à¦¬ à¦ªà§‡à¦®à§‡à¦¨à§à¦Ÿ à¦°à§‡à¦•à¦°à§à¦¡ à¦²à§‹à¦¡ à¦•à¦°à¦¿
+  // hms_payments থেকে সব পেমেন্ট রেকর্ড লোড করি
   const payments = (typeof load === 'function') ? load('hms_payments') : [];
   const charges = (typeof load === 'function') ? load('hms_charges') : [];
 
-  // à¦¤à¦¾à¦°à¦¿à¦– à¦…à¦¨à§à¦¯à¦¾à§Ÿà§€ à¦ªà§‡à¦®à§‡à¦¨à§à¦Ÿ à¦—à§à¦°à§à¦ª à¦•à¦°à¦¾à¦° à¦…à¦¬à¦œà§‡à¦•à§à¦Ÿ
+  // তারিখ অনুযায়ী পেমেন্ট গ্রুপ করার অবজেক্ট
   const dayMap = {};
 
   payments.forEach(p => {
     const pDate = p.date;
-    // à¦¤à¦¾à¦°à¦¿à¦– à¦°à§‡à¦žà§à¦œà§‡à¦° à¦®à¦§à§à¦¯à§‡ à¦†à¦›à§‡ à¦•à¦¿à¦¨à¦¾ à¦¯à¦¾à¦šà¦¾à¦‡ (à¦‡à¦¨à¦•à§à¦²à§à¦¸à¦¿à¦­)
+    // তারিখ রেঞ্জের মধ্যে আছে কিনা যাচাই (ইনক্লুসিভ)
     if (pDate >= from && pDate <= to) {
       if (!dayMap[pDate]) {
         dayMap[pDate] = { visits: 0, lab: 0, total: 0 };
@@ -33,7 +33,7 @@ function getDailyCollection(from, to) {
     }
   });
 
-  // à¦¤à¦¾à¦°à¦¿à¦– à¦…à¦¨à§à¦¯à¦¾à§Ÿà§€ à¦¸à¦¾à¦œà¦¿à§Ÿà§‡ à¦…à§à¦¯à¦¾à¦°à§‡ à¦¬à¦¾à¦¨à¦¾à¦¨à§‹
+  // তারিখ অনুযায়ী সাজিয়ে অ্যারে বানানো
   const sortedDates = Object.keys(dayMap).sort();
   let totalVisits = 0;
   let totalLab = 0;
@@ -52,7 +52,7 @@ function getDailyCollection(from, to) {
     };
   });
 
-  // à¦¬à¦°à§à¦¤à¦®à¦¾à¦¨ à¦®à§‹à¦Ÿ à¦¬à¦•à§‡à§Ÿà¦¾ (à¦¸à¦¬ à¦šà¦¾à¦°à§à¦œà§‡à¦° unpaid à¦…à¦‚à¦¶, à¦¤à¦¾à¦°à¦¿à¦– à¦«à¦¿à¦²à§à¦Ÿà¦¾à¦° à¦›à¦¾à§œà¦¾)
+  // বর্তমান মোট বকেয়া (সব চার্জের unpaid অংশ, তারিখ ফিল্টার ছাড়া)
   let totalDue = 0;
   charges.forEach(c => {
     const amt = Number(c.amount) || 0;
@@ -73,20 +73,20 @@ function getDailyCollection(from, to) {
 }
 
 /**
- * à§¨. à¦¤à¦¾à¦°à¦¿à¦– à¦…à¦¨à§à¦¯à¦¾à§Ÿà§€ à¦¨à¦¿à¦¬à¦¨à§à¦§à¦¿à¦¤ à¦°à§‹à¦—à§€ (Patients Registered in Range)
- * @param {string} from - à¦¶à§à¦°à§ à¦¤à¦¾à¦°à¦¿à¦– YYYY-MM-DD
- * @param {string} to - à¦¶à§‡à¦· à¦¤à¦¾à¦°à¦¿à¦– YYYY-MM-DD
+ * ২. তারিখ অনুযায়ী নিবন্ধিত রোগী (Patients Registered in Range)
+ * @param {string} from - শুরু তারিখ YYYY-MM-DD
+ * @param {string} to - শেষ তারিখ YYYY-MM-DD
  * @returns {object} { rows: [patient objects, newest first], count }
  */
 function getPatientsInRange(from, to) {
   const patients = (typeof load === 'function') ? load('hms_patients') : [];
 
-  // à¦°à§‡à¦žà§à¦œà§‡à¦° à¦­à§‡à¦¤à¦°à§‡à¦° à¦°à§‹à¦—à§€à¦•à§‡ à¦«à¦¿à¦²à§à¦Ÿà¦¾à¦° à¦•à¦°à¦¿
+  // রেঞ্জের ভেতরের রোগীকে ফিল্টার করি
   const filtered = patients.filter(p => {
     return p.regDate >= from && p.regDate <= to;
   });
 
-  // à¦¨à¦¤à§à¦¨ à¦¥à§‡à¦•à§‡ à¦ªà§à¦°à§‹à¦¨à§‹ à¦•à§à¦°à¦®à§‡ à¦¸à¦¾à¦œà¦¾à¦¨à§‹ (Newest first: à¦¤à¦¾à¦°à¦¿à¦– à¦¬à§œ à¦¥à§‡à¦•à§‡ à¦›à§‹à¦Ÿ, à¦¤à¦¾à¦°à¦ªà¦° à¦†à¦‡à¦¡à¦¿ à¦¬à§œ à¦¥à§‡à¦•à§‡ à¦›à§‹à¦Ÿ)
+  // নতুন থেকে পুরোনো ক্রমে সাজানো (Newest first: তারিখ বড় থেকে ছোট, তারপর আইডি বড় থেকে ছোট)
   filtered.sort((a, b) => {
     if (b.regDate !== a.regDate) {
       return b.regDate.localeCompare(a.regDate);
@@ -101,16 +101,16 @@ function getPatientsInRange(from, to) {
 }
 
 /**
- * à§©. à¦¡à¦¾à¦•à§à¦¤à¦¾à¦° à¦…à¦¨à§à¦¯à¦¾à§Ÿà§€ à¦­à¦¿à¦œà¦¿à¦Ÿ à¦“ à¦«à¦¿ à¦°à¦¿à¦ªà§‹à¦°à§à¦Ÿ (Doctor-wise Report)
- * @param {string} from - à¦¶à§à¦°à§ à¦¤à¦¾à¦°à¦¿à¦– YYYY-MM-DD
- * @param {string} to - à¦¶à§‡à¦· à¦¤à¦¾à¦°à¦¿à¦– YYYY-MM-DD
+ * ৩. ডাক্তার অনুযায়ী ভিজিট ও ফি রিপোর্ট (Doctor-wise Report)
+ * @param {string} from - শুরু তারিখ YYYY-MM-DD
+ * @param {string} to - শেষ তারিখ YYYY-MM-DD
  * @returns {object} { rows: [{doctorId, name, department, visits, fees}], totalVisits, totalFees }
  */
 function getDoctorReport(from, to) {
   const doctors = (typeof load === 'function') ? load('hms_doctors') : [];
   const visits = (typeof load === 'function') ? load('hms_visits') : [];
 
-  // à¦ªà§à¦°à¦¤à¦¿à¦Ÿà¦¿ à¦¡à¦¾à¦•à§à¦¤à¦¾à¦°à§‡à¦° à¦œà¦¨à§à¦¯ à¦ªà§à¦°à¦¾à¦¥à¦®à¦¿à¦• à¦•à¦¾à¦‰à¦¨à§à¦Ÿà¦¾à¦°
+  // প্রতিটি ডাক্তারের জন্য প্রাথমিক কাউন্টার
   const docStats = {};
   doctors.forEach(d => {
     docStats[d.id] = {
@@ -122,7 +122,7 @@ function getDoctorReport(from, to) {
     };
   });
 
-  // à¦­à¦¿à¦œà¦¿à¦Ÿ à¦¡à§‡à¦Ÿà¦¾ à¦¯à§‹à¦— à¦•à¦°à¦¾ (visit date à¦…à¦¨à§à¦¯à¦¾à§Ÿà§€ à¦«à¦¿à¦²à§à¦Ÿà¦¾à¦°)
+  // ভিজিট ডেটা যোগ করা (visit date অনুযায়ী ফিল্টার)
   visits.forEach(v => {
     if (v.date >= from && v.date <= to) {
       if (docStats[v.doctorId]) {
@@ -132,7 +132,7 @@ function getDoctorReport(from, to) {
     }
   });
 
-  // à¦…à§à¦¯à¦¾à¦°à§‡à¦•à§‡ visits à¦¸à¦‚à¦–à§à¦¯à¦¾ à¦…à¦¨à§à¦¸à¦¾à¦°à§‡ à¦¬à§œ à¦¥à§‡à¦•à§‡ à¦›à§‹à¦Ÿ (descending) à¦¸à¦¾à¦œà¦¾à¦¨à§‹
+  // অ্যারেকে visits সংখ্যা অনুসারে বড় থেকে ছোট (descending) সাজানো
   const rows = Object.values(docStats).sort((a, b) => {
     if (b.visits !== a.visits) {
       return b.visits - a.visits;
@@ -155,15 +155,15 @@ function getDoctorReport(from, to) {
 }
 
 /**
- * à§ª. à¦²à§à¦¯à¦¾à¦¬ à¦Ÿà§‡à¦¸à§à¦Ÿ à¦°à¦¿à¦ªà§‹à¦°à§à¦Ÿ (Lab Tests Report)
- * @param {string} from - à¦¶à§à¦°à§ à¦¤à¦¾à¦°à¦¿à¦– YYYY-MM-DD
- * @param {string} to - à¦¶à§‡à¦· à¦¤à¦¾à¦°à¦¿à¦– YYYY-MM-DD
+ * ৪. ল্যাব টেস্ট রিপোর্ট (Lab Tests Report)
+ * @param {string} from - শুরু তারিখ YYYY-MM-DD
+ * @param {string} to - শেষ তারিখ YYYY-MM-DD
  * @returns {object} { rows: [{testName, ordered, done, pending, amount}], totalOrdered, totalDone, totalPending, totalAmount }
  */
 function getLabReport(from, to) {
   const labOrders = (typeof load === 'function') ? load('hms_labOrders') : [];
 
-  // à¦¶à§à¦§à§ à¦…à¦°à§à¦¡à¦¾à¦° à¦¹à¦“à§Ÿà¦¾ à¦Ÿà§‡à¦¸à§à¦Ÿà¦—à§à¦²à§‹ à¦—à¦£à¦¨à¦¾à§Ÿ à¦†à¦¸à¦¬à§‡
+  // শুধু অর্ডার হওয়া টেস্টগুলো গণনায় আসবে
   const testMap = {};
 
   labOrders.forEach(o => {
@@ -189,7 +189,7 @@ function getLabReport(from, to) {
     }
   });
 
-  // à¦…à¦°à§à¦¡à¦¾à¦° à¦¸à¦‚à¦–à§à¦¯à¦¾ à¦…à¦¨à§à¦¯à¦¾à§Ÿà§€ à¦¬à§œ à¦¥à§‡à¦•à§‡ à¦›à§‹à¦Ÿ à¦¸à¦¾à¦œà¦¾à¦¨à§‹
+  // অর্ডার সংখ্যা অনুযায়ী বড় থেকে ছোট সাজানো
   const rows = Object.values(testMap).sort((a, b) => {
     if (b.ordered !== a.ordered) {
       return b.ordered - a.ordered;
@@ -219,14 +219,14 @@ function getLabReport(from, to) {
 }
 
 /**
- * à§«. à¦¬à¦•à§‡à§Ÿà¦¾ à¦¤à¦¾à¦²à¦¿à¦•à¦¾ (Patients with Due List)
+ * ৫. বকেয়া তালিকা (Patients with Due List)
  * @returns {object} { rows: [{patientId, name, phone, due}], totalDue }
  */
 function getDueList() {
   const patients = (typeof load === 'function') ? load('hms_patients') : [];
   const charges = (typeof load === 'function') ? load('hms_charges') : [];
 
-  // à¦°à§‹à¦—à§€ à¦…à¦¨à§à¦¯à¦¾à§Ÿà§€ à¦¬à¦•à§‡à§Ÿà¦¾ à¦¬à§‡à¦° à¦•à¦°à¦¾
+  // রোগী অনুযায়ী বকেয়া বের করা
   const dueMap = {};
   charges.forEach(c => {
     const amt = Number(c.amount) || 0;
@@ -240,7 +240,7 @@ function getDueList() {
   const rows = [];
   let totalDue = 0;
 
-  // à¦°à§‹à¦—à§€ à¦¤à¦¾à¦²à¦¿à¦•à¦¾à¦° à¦¨à¦¾à¦® à¦“ à¦«à§‹à¦¨ à¦¸à¦¹ à¦œà§‹à§œà¦¾ à¦²à¦¾à¦—à¦¾à¦¨à§‹
+  // রোগী তালিকার নাম ও ফোন সহ জোড়া লাগানো
   Object.keys(dueMap).forEach(pId => {
     const due = dueMap[pId];
     if (due > 0) {
@@ -257,7 +257,7 @@ function getDueList() {
     }
   });
 
-  // à¦¬à¦•à§‡à§Ÿà¦¾ à¦Ÿà¦¾à¦•à¦¾ à¦…à¦¨à§à¦¯à¦¾à§Ÿà§€ à¦¬à§œ à¦¥à§‡à¦•à§‡ à¦›à§‹à¦Ÿ à¦¸à¦¾à¦œà¦¾à¦¨à§‹
+  // বকেয়া টাকা অনুযায়ী বড় থেকে ছোট সাজানো
   rows.sort((a, b) => b.due - a.due);
 
   return {

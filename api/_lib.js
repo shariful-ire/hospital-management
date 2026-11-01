@@ -1,11 +1,11 @@
-﻿// api/_lib.js â€” ChatterMate-à¦à¦° à¦¸à¦¾à¦¥à§‡ à¦•à¦¥à¦¾ à¦¬à¦²à¦¾à¦° à¦¶à§‡à¦¯à¦¼à¦¾à¦°à§à¦¡ à¦•à§‹à¦¡ (Vercel à¦«à¦¾à¦‚à¦¶à¦¨à¦—à§à¦²à§‹ à¦à¦Ÿà¦¾ à¦¬à§à¦¯à¦¬à¦¹à¦¾à¦° à¦•à¦°à§‡)
-// à¦¬à¦¾à¦‚à¦²à¦¾: à¦«à¦¾à¦‡à¦²à§‡à¦° à¦¨à¦¾à¦® _ à¦¦à¦¿à¦¯à¦¼à§‡ à¦¶à§à¦°à§, à¦¤à¦¾à¦‡ Vercel à¦à¦Ÿà¦¾à¦•à§‡ à¦†à¦²à¦¾à¦¦à¦¾ API à¦ à¦¿à¦•à¦¾à¦¨à¦¾ à¦¬à¦¾à¦¨à¦¾à¦¯à¦¼ à¦¨à¦¾à¥¤
+﻿// api/_lib.js — ChatterMate-এর সাথে কথা বলার শেয়ার্ড কোড (Vercel ফাংশনগুলো এটা ব্যবহার করে)
+// বাংলা: ফাইলের নাম _ দিয়ে শুরু, তাই Vercel এটাকে আলাদা API ঠিকানা বানায় না।
 'use strict';
 const https = require('https');
 
 const SYSTEM_PROMPT = 'You are a hospital report assistant. Answer only from the report data given. Never invent numbers. If the data does not have the answer, say so. Money is in Taka (Tk). Keep answers short. You cannot change any data; refuse requests to edit or delete.';
 
-// à¦¬à¦¾à¦‚à¦²à¦¾: key à¦¶à§à¦§à§ Vercel Environment Variable à¦¥à§‡à¦•à§‡ à¦ªà¦¡à¦¼à¦¾ à¦¹à¦¯à¦¼, à¦¬à§à¦°à¦¾à¦‰à¦œà¦¾à¦° à¦¥à§‡à¦•à§‡ à¦•à¦–à¦¨à§‹ à¦¨à¦¯à¦¼
+// বাংলা: key শুধু Vercel Environment Variable থেকে পড়া হয়, ব্রাউজার থেকে কখনো নয়
 function getKey() {
   return (process.env.CHATTERMATE_API_KEY || '').trim();
 }
@@ -65,7 +65,7 @@ async function validateKey(apiKey) {
   return true;
 }
 
-// à¦¬à¦¾à¦‚à¦²à¦¾: "event: model_chunk"-à¦à¦° à¦ªà¦°à§‡à¦° data à¦²à¦¾à¦‡à¦¨à§‡à¦° content à¦œà§‹à¦¡à¦¼à¦¾ à¦²à¦¾à¦—à¦¿à¦¯à¦¼à§‡ à¦‰à¦¤à§à¦¤à¦° à¦¬à¦¾à¦¨à¦¾à¦¯à¦¼
+// বাংলা: "event: model_chunk"-এর পরের data লাইনের content জোড়া লাগিয়ে উত্তর বানায়
 function parseModelChunkStream(rawText) {
   const normalized = rawText.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
   let answer = '';

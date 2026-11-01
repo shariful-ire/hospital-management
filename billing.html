@@ -68,13 +68,13 @@
 
     <main class="main-content">
       <div class="page-header">
-        <h1 class="page-title">ðŸ’³ Patient Billing & Payments</h1>
+        <h1 class="page-title">💳 Patient Billing & Payments</h1>
         <p class="page-subtitle">Track patient charges, collect payments, and issue money receipts</p>
       </div>
 
       <div id="billingAlert" class="alert" style="display: none;"></div>
 
-      <!-- à§§. à¦°à§‹à¦—à§€ à¦¨à¦¿à¦°à§à¦¬à¦¾à¦šà¦¨ à¦“ à¦¸à¦¾à¦°à¦¸à¦‚à¦•à§à¦·à§‡à¦ª -->
+      <!-- ১. রোগী নির্বাচন ও সারসংক্ষেপ -->
       <div class="card mb-4">
         <div class="card-header">
           <h2 class="card-title">1. Select Patient</h2>
@@ -82,7 +82,7 @@
         <div class="card-body">
           <div class="grid grid-2">
             <div class="form-group">
-              <label class="form-label" for="patientSearch">ðŸ” Filter Patient (name, phone or ID):</label>
+              <label class="form-label" for="patientSearch">🔍 Filter Patient (name, phone or ID):</label>
               <input type="text" id="patientSearch" class="form-control" placeholder="Type name or phone to filter...">
             </div>
             <div class="form-group">
@@ -115,7 +115,7 @@
         </div>
       </div>
 
-      <!-- à§¨. à¦ªà§‡à¦®à§‡à¦¨à§à¦Ÿ à¦—à§à¦°à¦¹à¦£ à¦à¦¬à¦‚ à¦°à¦¸à¦¿à¦¦ à¦¸à§‡à¦•à¦¶à¦¨ -->
+      <!-- ২. পেমেন্ট গ্রহণ এবং রসিদ সেকশন -->
       <div id="paymentActionSection" style="display: none;" class="grid grid-2 mb-4">
         <div class="card" style="margin-bottom: 0;">
           <div class="card-header">
@@ -144,7 +144,7 @@
               </div>
 
               <button type="submit" id="btnSubmitPayment" class="btn btn-primary" style="width: 100%;">
-                ðŸ’³ Process Payment
+                💳 Process Payment
               </button>
             </form>
           </div>
@@ -154,7 +154,7 @@
           <div class="card-header flex justify-between items-center">
             <h2 class="card-title">3. Money Receipt</h2>
             <button id="btnPrintReceipt" class="btn btn-secondary btn-sm" style="display: none;" onclick="window.print()">
-              ðŸ–¨ï¸ Print Receipt
+              🖨️ Print Receipt
             </button>
           </div>
           <div class="card-body">
@@ -201,7 +201,7 @@
         </div>
       </div>
 
-      <!-- à§©. à¦šà¦¾à¦°à§à¦œ à¦“ à¦ªà§‡à¦®à§‡à¦¨à§à¦Ÿ à¦¹à¦¿à¦¸à§à¦Ÿà§à¦°à¦¿ à¦Ÿà§‡à¦¬à¦¿à¦² -->
+      <!-- ৩. চার্জ ও পেমেন্ট হিস্ট্রি টেবিল -->
       <div id="patientDetailsSection" style="display: none;" class="grid grid-2 mb-4">
         <div class="card" style="margin-bottom: 0;">
           <div class="card-header">
@@ -250,10 +250,10 @@
         </div>
       </div>
 
-      <!-- à§ª. à¦¬à¦•à§‡à¦¯à¦¼à¦¾ à¦¤à¦¾à¦²à¦¿à¦•à¦¾ -->
+      <!-- ৪. বকেয়া তালিকা -->
       <div class="card">
         <div class="card-header flex justify-between items-center">
-          <h2 class="card-title">âš ï¸ Patients with Outstanding Due</h2>
+          <h2 class="card-title">⚠️ Patients with Outstanding Due</h2>
           <span id="duePatientsCount" class="badge badge-warning">0 Patients</span>
         </div>
         <div class="card-body p-0">
@@ -453,7 +453,7 @@
       duePatientsTableBody.innerHTML = '';
 
       if (dueList.length === 0) {
-        duePatientsTableBody.innerHTML = '<tr><td colspan="5" class="text-center text-muted" style="padding:16px;">ðŸŽ‰ Great! No patients have outstanding dues.</td></tr>';
+        duePatientsTableBody.innerHTML = '<tr><td colspan="5" class="text-center text-muted" style="padding:16px;">🎉 Great! No patients have outstanding dues.</td></tr>';
         return;
       }
 
@@ -467,7 +467,7 @@
           <td style="color: var(--red); font-weight: 700;">${formatMoney(item.due)}</td>
           <td>
             <button class="btn btn-secondary btn-sm" data-patient-id="${escapeHtml(item.id)}">
-              Select & Pay âž”
+              Select & Pay ➔
             </button>
           </td>
         `;

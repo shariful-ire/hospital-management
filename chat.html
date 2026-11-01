@@ -210,23 +210,23 @@
 <body>
 
   <div class="layout">
-    <!-- à¦—à§à¦²à§‹à¦¬à¦¾à¦² à¦¸à¦¾à¦‡à¦¡à¦¬à¦¾à¦° -->
+    <!-- গ্লোবাল সাইডবার -->
     <aside id="sidebar" class="sidebar"></aside>
 
-    <!-- à¦®à§‚à¦² à¦•à¦¨à¦Ÿà§‡à¦¨à§à¦Ÿ à¦à¦²à¦¾à¦•à¦¾ -->
+    <!-- মূল কনটেন্ট এলাকা -->
     <main class="main-content">
       
       <div class="chat-container">
         
-        <!-- à¦šà§à¦¯à¦¾à¦Ÿ à¦¹à§‡à¦¡à¦¾à¦° -->
+        <!-- চ্যাট হেডার -->
         <div class="chat-header">
-          <h2>ðŸ¤– Report Assistant</h2>
+          <h2>🤖 Report Assistant</h2>
           <span class="badge-powered">Powered by ChatterMate</span>
         </div>
 
-        <!-- à¦®à§‡à¦¸à§‡à¦œ à¦¸à§à¦•à§à¦°à§‹à¦²à¦¿à¦‚ à¦à¦²à¦¾à¦•à¦¾ -->
+        <!-- মেসেজ স্ক্রোলিং এলাকা -->
         <div class="chat-messages" id="chatMessages">
-          <!-- à¦¸à§à¦¬à¦¾à¦—à¦¤à¦® à¦®à§‡à¦¸à§‡à¦œ -->
+          <!-- স্বাগতম মেসেজ -->
           <div class="chat-bubble assistant">
             Hello! I am your hospital report assistant. Ask me questions about collections, patients, visits, or lab tests based on your hospital's real data.
           </div>
@@ -236,29 +236,29 @@
           </div>
         </div>
 
-        <!-- à¦°à§‡à¦¡à¦¿à¦®à§‡à¦¡ à¦‰à¦¦à¦¾à¦¹à¦°à¦£ à¦ªà§à¦°à¦¶à§à¦¨ à¦šà¦¿à¦ª -->
+        <!-- রেডিমেড উদাহরণ প্রশ্ন চিপ -->
         <div class="chat-suggestions">
           <button type="button" class="suggestion-chip" onclick="askPreset('How much did we collect today?')">
-            ðŸ’µ How much did we collect today?
+            💵 How much did we collect today?
           </button>
           <button type="button" class="suggestion-chip" onclick="askPreset('How many new patients came this week?')">
-            ðŸ‘¥ How many new patients came this week?
+            👥 How many new patients came this week?
           </button>
           <button type="button" class="suggestion-chip" onclick="askPreset('Which doctor had the most visits this month?')">
-            ðŸ‘¨â€âš•ï¸ Which doctor had the most visits this month?
+            👨‍⚕️ Which doctor had the most visits this month?
           </button>
           <button type="button" class="suggestion-chip" onclick="askPreset('How many lab tests are still pending?')">
-            ðŸ§ª How many lab tests are still pending?
+            🧪 How many lab tests are still pending?
           </button>
           <button type="button" class="suggestion-chip" onclick="askPreset('Who still owes money?')">
-            âš ï¸ Who still owes money?
+            ⚠️ Who still owes money?
           </button>
           <button type="button" class="suggestion-chip" onclick="askPreset('Delete patient P-0042')">
-            ðŸ›‘ Delete patient P-0042
+            🛑 Delete patient P-0042
           </button>
         </div>
 
-        <!-- à¦šà§à¦¯à¦¾à¦Ÿ à¦‡à¦¨à¦ªà§à¦Ÿ à¦¬à¦¾à¦° -->
+        <!-- চ্যাট ইনপুট বার -->
         <form class="chat-input-bar" id="chatForm" onsubmit="return handleChatSubmit(event)">
           <input 
             type="text" 
@@ -275,12 +275,12 @@
     </main>
   </div>
 
-  <!-- à¦¸à§à¦•à§à¦°à¦¿à¦ªà§à¦Ÿ à¦«à¦¾à¦‡à¦²à¦—à§à¦²à§‹ à¦²à§‹à¦¡ -->
+  <!-- স্ক্রিপ্ট ফাইলগুলো লোড -->
   <script src="db.js"></script>
   <script src="reports.js"></script>
   <script src="chat.js"></script>
   <script>
-    // à¦¸à¦¾à¦‡à¦¡à¦¬à¦¾à¦° à¦‡à¦¨à¦¿à¦¶à¦¿à¦¯à¦¼à¦¾à¦²à¦¾à¦‡à¦œ à¦•à¦°à¦¾ (à¦¨à¦¿à¦°à¦¾à¦ªà¦¦ à¦‰à¦ªà¦¾à§Ÿà§‡)
+    // সাইডবার ইনিশিয়ালাইজ করা (নিরাপদ উপায়ে)
     document.addEventListener('DOMContentLoaded', function() {
       if (typeof renderSidebar === 'function') {
         try { renderSidebar('chat'); } catch (e) { console.warn('Sidebar render skipped:', e); }
@@ -289,7 +289,7 @@
       if (input) input.focus();
     });
 
-    // à¦•à§à¦²à¦¿à¦• à¦•à¦°à§‡ à¦°à§‡à¦¡à¦¿à¦®à§‡à¦¡ à¦ªà§à¦°à¦¶à§à¦¨ à¦ªà¦¾à¦ à¦¾à¦¨à§‹
+    // ক্লিক করে রেডিমেড প্রশ্ন পাঠানো
     function askPreset(questionText) {
       var input = document.getElementById('chatInput');
       if (input) {
