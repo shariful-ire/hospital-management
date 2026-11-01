@@ -1,11 +1,11 @@
-/* ============================================================
-   Shanti Care Hospital - Deterministic Sample Data Generator (sample-data.js)
-   এটি চালালে পূর্বের সব ডেটা মুছে গিয়ে ৫০ জন রোগী, ১৩০টি ভিজিট,
-   ৭০টি ল্যাব টেস্ট ও সামঞ্জস্যপূর্ণ পেমেন্ট লোড হয়।
-   সবার জন্য একই ফলাফল পেতে Mulberry32 সিডেড র‍্যান্ডম ব্যবহৃত হয়েছে।
+﻿/* ============================================================
+   LifeBridge Hospital - Deterministic Sample Data Generator (sample-data.js)
+   à¦à¦Ÿà¦¿ à¦šà¦¾à¦²à¦¾à¦²à§‡ à¦ªà§‚à¦°à§à¦¬à§‡à¦° à¦¸à¦¬ à¦¡à§‡à¦Ÿà¦¾ à¦®à§à¦›à§‡ à¦—à¦¿à¦¯à¦¼à§‡ à§«à§¦ à¦œà¦¨ à¦°à§‹à¦—à§€, à§§à§©à§¦à¦Ÿà¦¿ à¦­à¦¿à¦œà¦¿à¦Ÿ,
+   à§­à§¦à¦Ÿà¦¿ à¦²à§à¦¯à¦¾à¦¬ à¦Ÿà§‡à¦¸à§à¦Ÿ à¦“ à¦¸à¦¾à¦®à¦žà§à¦œà¦¸à§à¦¯à¦ªà§‚à¦°à§à¦£ à¦ªà§‡à¦®à§‡à¦¨à§à¦Ÿ à¦²à§‹à¦¡ à¦¹à§Ÿà¥¤
+   à¦¸à¦¬à¦¾à¦° à¦œà¦¨à§à¦¯ à¦à¦•à¦‡ à¦«à¦²à¦¾à¦«à¦² à¦ªà§‡à¦¤à§‡ Mulberry32 à¦¸à¦¿à¦¡à§‡à¦¡ à¦°â€à§à¦¯à¦¾à¦¨à§à¦¡à¦® à¦¬à§à¦¯à¦¬à¦¹à§ƒà¦¤ à¦¹à§Ÿà§‡à¦›à§‡à¥¤
    ============================================================ */
 
-// সিডেড র‍্যান্ডম জেনারেটর (Mulberry32) - যাতে রিফ্রেশ বা বারবার লোড করলেও ফিক্সড ডেটা আসে
+// à¦¸à¦¿à¦¡à§‡à¦¡ à¦°â€à§à¦¯à¦¾à¦¨à§à¦¡à¦® à¦œà§‡à¦¨à¦¾à¦°à§‡à¦Ÿà¦° (Mulberry32) - à¦¯à¦¾à¦¤à§‡ à¦°à¦¿à¦«à§à¦°à§‡à¦¶ à¦¬à¦¾ à¦¬à¦¾à¦°à¦¬à¦¾à¦° à¦²à§‹à¦¡ à¦•à¦°à¦²à§‡à¦“ à¦«à¦¿à¦•à§à¦¸à¦¡ à¦¡à§‡à¦Ÿà¦¾ à¦†à¦¸à§‡
 function mulberry32(a) {
   return function() {
     var t = a += 0x6D2B79F5;
@@ -15,21 +15,21 @@ function mulberry32(a) {
   };
 }
 
-// ফিক্সড সিড
+// à¦«à¦¿à¦•à§à¦¸à¦¡ à¦¸à¦¿à¦¡
 var rnd = mulberry32(123456789);
 
-// র‍্যান্ডম ইন্টিজার জেনারেটর [min, max]
+// à¦°â€à§à¦¯à¦¾à¦¨à§à¦¡à¦® à¦‡à¦¨à§à¦Ÿà¦¿à¦œà¦¾à¦° à¦œà§‡à¦¨à¦¾à¦°à§‡à¦Ÿà¦° [min, max]
 function randInt(min, max) {
   return Math.floor(rnd() * (max - min + 1)) + min;
 }
 
-// অ্যারে থেকে র‍্যান্ডম আইটেম পছন্দ করা
+// à¦…à§à¦¯à¦¾à¦°à§‡ à¦¥à§‡à¦•à§‡ à¦°â€à§à¦¯à¦¾à¦¨à§à¦¡à¦® à¦†à¦‡à¦Ÿà§‡à¦® à¦ªà¦›à¦¨à§à¦¦ à¦•à¦°à¦¾
 function randChoice(arr) {
   return arr[randInt(0, arr.length - 1)];
 }
 
 /* ------------------------------------------------------------
-   সব ডেটা মুছে ফেলার ফাংশন (Reset)
+   à¦¸à¦¬ à¦¡à§‡à¦Ÿà¦¾ à¦®à§à¦›à§‡ à¦«à§‡à¦²à¦¾à¦° à¦«à¦¾à¦‚à¦¶à¦¨ (Reset)
    ------------------------------------------------------------ */
 function clearAllData() {
   if (confirm("Are you sure you want to delete ALL hospital data? This cannot be undone.")) {
@@ -39,26 +39,29 @@ function clearAllData() {
     localStorage.removeItem("hms_labOrders");
     localStorage.removeItem("hms_charges");
     localStorage.removeItem("hms_payments");
+    localStorage.removeItem("hms_settings");
+    localStorage.removeItem("hms_hospital_profile");
+    localStorage.removeItem("hms_theme");
     alert("All hospital data has been cleared.");
     location.reload();
   }
 }
 
 /* ------------------------------------------------------------
-   নমুনা ডেটা জেনারেট ও লোড করার মূল ফাংশন
+   à¦¨à¦®à§à¦¨à¦¾ à¦¡à§‡à¦Ÿà¦¾ à¦œà§‡à¦¨à¦¾à¦°à§‡à¦Ÿ à¦“ à¦²à§‹à¦¡ à¦•à¦°à¦¾à¦° à¦®à§‚à¦² à¦«à¦¾à¦‚à¦¶à¦¨
    ------------------------------------------------------------ */
 function loadSampleData() {
   if (!confirm("This will REPLACE all current hospital data with fresh sample data. Continue?")) {
     return;
   }
 
-  // সিড রিসেট করা যাতে প্রতিবার ঠিক একই সিকোয়েন্সে ডেটা তৈরি হয়
+  // à¦¸à¦¿à¦¡ à¦°à¦¿à¦¸à§‡à¦Ÿ à¦•à¦°à¦¾ à¦¯à¦¾à¦¤à§‡ à¦ªà§à¦°à¦¤à¦¿à¦¬à¦¾à¦° à¦ à¦¿à¦• à¦à¦•à¦‡ à¦¸à¦¿à¦•à§‹à¦¯à¦¼à§‡à¦¨à§à¦¸à§‡ à¦¡à§‡à¦Ÿà¦¾ à¦¤à§ˆà¦°à¦¿ à¦¹à¦¯à¦¼
   rnd = mulberry32(987654321);
 
   var today = todayStr();
 
   /* ----------------------------------------------------------
-     ১. নির্দিষ্ট ৫ জন ডাক্তার তৈরি (Spec অনুযায়ী হুবহু)
+     à§§. à¦¨à¦¿à¦°à§à¦¦à¦¿à¦·à§à¦Ÿ à§« à¦œà¦¨ à¦¡à¦¾à¦•à§à¦¤à¦¾à¦° à¦¤à§ˆà¦°à¦¿ (Spec à¦…à¦¨à§à¦¯à¦¾à§Ÿà§€ à¦¹à§à¦¬à¦¹à§)
      ---------------------------------------------------------- */
   var doctors = [
     { id: "D-001", name: "Dr. Rahman", department: "Medicine", fee: 800 },
@@ -69,7 +72,7 @@ function loadSampleData() {
   ];
 
   /* ----------------------------------------------------------
-     ২. ৫০ জন বাংলাদেশি রোগীর তথ্য তৈরি (গত ৩০ দিনের মধ্যে ছড়ানো)
+     à§¨. à§«à§¦ à¦œà¦¨ à¦¬à¦¾à¦‚à¦²à¦¾à¦¦à§‡à¦¶à¦¿ à¦°à§‹à¦—à§€à¦° à¦¤à¦¥à§à¦¯ à¦¤à§ˆà¦°à¦¿ (à¦—à¦¤ à§©à§¦ à¦¦à¦¿à¦¨à§‡à¦° à¦®à¦§à§à¦¯à§‡ à¦›à¦¡à¦¼à¦¾à¦¨à§‹)
      ---------------------------------------------------------- */
   var firstNamesMale = ["Mohammad", "Abdul", "Rahim", "Karim", "Tanvir", "Sabbir", "Arif", "Mahmud", "Fahim", "Shafiq", "Zubair", "Nasir", "Kamal", "Tariq", "Imran"];
   var firstNamesFemale = ["Fatima", "Ayesha", "Nusrat", "Rina", "Shirin", "Sadia", "Tahmina", "Rokeya", "Farhana", "Mousumi", "Tasnim", "Sharmin", "Jesmin", "Nahid", "Sultana"];
@@ -86,22 +89,22 @@ function loadSampleData() {
 
     var age;
     var ageR = rnd();
-    if (ageR < 0.15) age = randInt(1, 12);        // শিশু
-    else if (ageR < 0.35) age = randInt(13, 29);  // তরুণ
-    else if (ageR < 0.75) age = randInt(30, 59);  // মধ্যবয়সী
-    else age = randInt(60, 80);                   // বয়স্ক
+    if (ageR < 0.15) age = randInt(1, 12);        // à¦¶à¦¿à¦¶à§
+    else if (ageR < 0.35) age = randInt(13, 29);  // à¦¤à¦°à§à¦£
+    else if (ageR < 0.75) age = randInt(30, 59);  // à¦®à¦§à§à¦¯à¦¬à¦¯à¦¼à¦¸à§€
+    else age = randInt(60, 80);                   // à¦¬à¦¯à¦¼à¦¸à§à¦•
 
     var phone = "01" + randChoice(["3", "7", "8", "9", "5", "6"]) + String(randInt(10000000, 99999999));
     var address = randChoice(areas);
 
-    // রেজিস্ট্রেশন ডেট: গত ৩০ দিনের ভেতর (কয়েকজন আজ, কয়েকজন গত ৭ দিনে)
+    // à¦°à§‡à¦œà¦¿à¦¸à§à¦Ÿà§à¦°à§‡à¦¶à¦¨ à¦¡à§‡à¦Ÿ: à¦—à¦¤ à§©à§¦ à¦¦à¦¿à¦¨à§‡à¦° à¦­à§‡à¦¤à¦° (à¦•à¦¯à¦¼à§‡à¦•à¦œà¦¨ à¦†à¦œ, à¦•à¦¯à¦¼à§‡à¦•à¦œà¦¨ à¦—à¦¤ à§­ à¦¦à¦¿à¦¨à§‡)
     var daysAgo;
     if (i <= 5) {
-      daysAgo = 0; // আজ ৫ জন
+      daysAgo = 0; // à¦†à¦œ à§« à¦œà¦¨
     } else if (i <= 18) {
-      daysAgo = randInt(1, 7); // গত ৭ দিনে ১৩ জন
+      daysAgo = randInt(1, 7); // à¦—à¦¤ à§­ à¦¦à¦¿à¦¨à§‡ à§§à§© à¦œà¦¨
     } else {
-      daysAgo = randInt(8, 30); // বাকিরা ৮ থেকে ৩০ দিন আগে
+      daysAgo = randInt(8, 30); // à¦¬à¦¾à¦•à¦¿à¦°à¦¾ à§® à¦¥à§‡à¦•à§‡ à§©à§¦ à¦¦à¦¿à¦¨ à¦†à¦—à§‡
     }
     var regDate = addDays(today, -daysAgo);
 
@@ -117,9 +120,9 @@ function loadSampleData() {
   }
 
   /* ----------------------------------------------------------
-     ৩. প্রায় ১৩০টি ডাক্তার ভিজিট (Visits) ও চার্জ তৈরি
-     শর্ত: Dr. Rahman (~35%), Dr. Karim (~25%), বাকিরা বাকিটুকু।
-     ভিজিট রোগীর regDate-এর আগে হতে পারবে না।
+     à§©. à¦ªà§à¦°à¦¾à¦¯à¦¼ à§§à§©à§¦à¦Ÿà¦¿ à¦¡à¦¾à¦•à§à¦¤à¦¾à¦° à¦­à¦¿à¦œà¦¿à¦Ÿ (Visits) à¦“ à¦šà¦¾à¦°à§à¦œ à¦¤à§ˆà¦°à¦¿
+     à¦¶à¦°à§à¦¤: Dr. Rahman (~35%), Dr. Karim (~25%), à¦¬à¦¾à¦•à¦¿à¦°à¦¾ à¦¬à¦¾à¦•à¦¿à¦Ÿà§à¦•à§à¥¤
+     à¦­à¦¿à¦œà¦¿à¦Ÿ à¦°à§‹à¦—à§€à¦° regDate-à¦à¦° à¦†à¦—à§‡ à¦¹à¦¤à§‡ à¦ªà¦¾à¦°à¦¬à§‡ à¦¨à¦¾à¥¤
      ---------------------------------------------------------- */
   var problems = [
     { p: "Fever and persistent cough for 4 days", m: "Tab Napa Extra 1+1+1, Syp Adryx 2 tsp thrice daily" },
@@ -142,9 +145,9 @@ function loadSampleData() {
   for (var v = 1; v <= 130; v++) {
     var patient = randChoice(patients);
 
-    // রোগীর regDate থেকে আজকের মধ্যে ভিজিটের তারিখ নির্ধারণ
+    // à¦°à§‹à¦—à§€à¦° regDate à¦¥à§‡à¦•à§‡ à¦†à¦œà¦•à§‡à¦° à¦®à¦§à§à¦¯à§‡ à¦­à¦¿à¦œà¦¿à¦Ÿà§‡à¦° à¦¤à¦¾à¦°à¦¿à¦– à¦¨à¦¿à¦°à§à¦§à¦¾à¦°à¦£
     var daysSinceReg = 0;
-    // তারিখের পার্থক্য হিসাব
+    // à¦¤à¦¾à¦°à¦¿à¦–à§‡à¦° à¦ªà¦¾à¦°à§à¦¥à¦•à§à¦¯ à¦¹à¦¿à¦¸à¦¾à¦¬
     var regParts = patient.regDate.split("-");
     var todayParts = today.split("-");
     var dReg = new Date(regParts[0], regParts[1] - 1, regParts[2]);
@@ -154,7 +157,7 @@ function loadSampleData() {
     var visitDaysOffset = randInt(0, diffDays);
     var visitDate = addDays(patient.regDate, visitDaysOffset);
 
-    // ডাক্তারের ভিজিট বণ্টন (Dr. Rahman 35%, Karim 25%, Sultana 15%, Nasrin 15%, Hasan 10%)
+    // à¦¡à¦¾à¦•à§à¦¤à¦¾à¦°à§‡à¦° à¦­à¦¿à¦œà¦¿à¦Ÿ à¦¬à¦£à§à¦Ÿà¦¨ (Dr. Rahman 35%, Karim 25%, Sultana 15%, Nasrin 15%, Hasan 10%)
     var docR = rnd();
     var doc;
     if (docR < 0.35) doc = doctors[0];       // Dr. Rahman (Medicine)
@@ -176,7 +179,7 @@ function loadSampleData() {
       fee: doc.fee
     });
 
-    // প্রতি ভিজিটে চার্জ তৈরি
+    // à¦ªà§à¦°à¦¤à¦¿ à¦­à¦¿à¦œà¦¿à¦Ÿà§‡ à¦šà¦¾à¦°à§à¦œ à¦¤à§ˆà¦°à¦¿
     var cId = "C-" + String(chargeCounter++).padStart(4, "0");
     charges.push({
       id: cId,
@@ -185,13 +188,13 @@ function loadSampleData() {
       refId: vId,
       date: visitDate,
       amount: doc.fee,
-      paid: 0 // নিচে পেমেন্ট সেকশনে আপডেট হবে
+      paid: 0 // à¦¨à¦¿à¦šà§‡ à¦ªà§‡à¦®à§‡à¦¨à§à¦Ÿ à¦¸à§‡à¦•à¦¶à¦¨à§‡ à¦†à¦ªà¦¡à§‡à¦Ÿ à¦¹à¦¬à§‡
     });
   }
 
   /* ----------------------------------------------------------
-     ৪. প্রায় ৭০টি ল্যাব টেস্ট অর্ডার ও চার্জ তৈরি
-     শর্ত: ২৫% Pending (সাম্প্রতিক), ৭৫% Done সাথে রেজাল্ট টেক্সট।
+     à§ª. à¦ªà§à¦°à¦¾à¦¯à¦¼ à§­à§¦à¦Ÿà¦¿ à¦²à§à¦¯à¦¾à¦¬ à¦Ÿà§‡à¦¸à§à¦Ÿ à¦…à¦°à§à¦¡à¦¾à¦° à¦“ à¦šà¦¾à¦°à§à¦œ à¦¤à§ˆà¦°à¦¿
+     à¦¶à¦°à§à¦¤: à§¨à§«% Pending (à¦¸à¦¾à¦®à§à¦ªà§à¦°à¦¤à¦¿à¦•), à§­à§«% Done à¦¸à¦¾à¦¥à§‡ à¦°à§‡à¦œà¦¾à¦²à§à¦Ÿ à¦Ÿà§‡à¦•à§à¦¸à¦Ÿà¥¤
      ---------------------------------------------------------- */
   var labResults = [
     "Normal limits. Hb: 13.5 g/dL, ESR: 12 mm/hr.",
@@ -224,7 +227,7 @@ function loadSampleData() {
     var test = randChoice(LAB_TESTS);
     var lId = "L-" + String(labCounter++).padStart(4, "0");
 
-    // সাম্প্রতিক টেস্টগুলো এবং সামগ্রিক ২৫% Pending থাকবে
+    // à¦¸à¦¾à¦®à§à¦ªà§à¦°à¦¤à¦¿à¦• à¦Ÿà§‡à¦¸à§à¦Ÿà¦—à§à¦²à§‹ à¦à¦¬à¦‚ à¦¸à¦¾à¦®à¦—à§à¦°à¦¿à¦• à§¨à§«% Pending à¦¥à¦¾à¦•à¦¬à§‡
     var isRecent = (labDate >= addDays(today, -3));
     var isPending = (isRecent && rnd() < 0.6) || (rnd() < 0.20);
 
@@ -244,7 +247,7 @@ function loadSampleData() {
       doneDate: doneDate
     });
 
-    // প্রতি ল্যাব টেস্টের জন্য চার্জ তৈরি
+    // à¦ªà§à¦°à¦¤à¦¿ à¦²à§à¦¯à¦¾à¦¬ à¦Ÿà§‡à¦¸à§à¦Ÿà§‡à¦° à¦œà¦¨à§à¦¯ à¦šà¦¾à¦°à§à¦œ à¦¤à§ˆà¦°à¦¿
     var cLabId = "C-" + String(chargeCounter++).padStart(4, "0");
     charges.push({
       id: cLabId,
@@ -253,30 +256,30 @@ function loadSampleData() {
       refId: lId,
       date: labDate,
       amount: test.price,
-      paid: 0 // নিচে পেমেন্ট সেকশনে আপডেট হবে
+      paid: 0 // à¦¨à¦¿à¦šà§‡ à¦ªà§‡à¦®à§‡à¦¨à§à¦Ÿ à¦¸à§‡à¦•à¦¶à¦¨à§‡ à¦†à¦ªà¦¡à§‡à¦Ÿ à¦¹à¦¬à§‡
     });
   }
 
   /* ----------------------------------------------------------
-     ৫. পেমেন্ট তৈরি ও চার্জের সাথে নিখুঁতভাবে সমন্বয় (Payments Allocation)
-     শর্ত: ~৭০% ফুল পেইড, ~১৫% আংশিক পেইড, ~১৫% আনপেইড।
-     আজকের তারিখে অন্তত ৮টি পেমেন্ট থাকবে (visit ও lab দুটোই)।
-     কমপক্ষে ৮ জন রোগীর বকেয়া (Due) থাকবে।
-     কোনো ওভারপেমেন্ট হবে না। charge.paid = sum(payments)
+     à§«. à¦ªà§‡à¦®à§‡à¦¨à§à¦Ÿ à¦¤à§ˆà¦°à¦¿ à¦“ à¦šà¦¾à¦°à§à¦œà§‡à¦° à¦¸à¦¾à¦¥à§‡ à¦¨à¦¿à¦–à§à¦à¦¤à¦­à¦¾à¦¬à§‡ à¦¸à¦®à¦¨à§à¦¬à§Ÿ (Payments Allocation)
+     à¦¶à¦°à§à¦¤: ~à§­à§¦% à¦«à§à¦² à¦ªà§‡à¦‡à¦¡, ~à§§à§«% à¦†à¦‚à¦¶à¦¿à¦• à¦ªà§‡à¦‡à¦¡, ~à§§à§«% à¦†à¦¨à¦ªà§‡à¦‡à¦¡à¥¤
+     à¦†à¦œà¦•à§‡à¦° à¦¤à¦¾à¦°à¦¿à¦–à§‡ à¦…à¦¨à§à¦¤à¦¤ à§®à¦Ÿà¦¿ à¦ªà§‡à¦®à§‡à¦¨à§à¦Ÿ à¦¥à¦¾à¦•à¦¬à§‡ (visit à¦“ lab à¦¦à§à¦Ÿà§‹à¦‡)à¥¤
+     à¦•à¦®à¦ªà¦•à§à¦·à§‡ à§® à¦œà¦¨ à¦°à§‹à¦—à§€à¦° à¦¬à¦•à§‡à¦¯à¦¼à¦¾ (Due) à¦¥à¦¾à¦•à¦¬à§‡à¥¤
+     à¦•à§‹à¦¨à§‹ à¦“à¦­à¦¾à¦°à¦ªà§‡à¦®à§‡à¦¨à§à¦Ÿ à¦¹à¦¬à§‡ à¦¨à¦¾à¥¤ charge.paid = sum(payments)
      ---------------------------------------------------------- */
   var payments = [];
   var payCounter = 1;
   var receiptCounter = 1;
   var paymentMethods = ["Cash", "Card", "bKash"];
 
-  // চার্জগুলোকে তারিখ অনুযায়ী সাজানো
+  // à¦šà¦¾à¦°à§à¦œà¦—à§à¦²à§‹à¦•à§‡ à¦¤à¦¾à¦°à¦¿à¦– à¦…à¦¨à§à¦¯à¦¾à¦¯à¦¼à§€ à¦¸à¦¾à¦œà¦¾à¦¨à§‹
   charges.sort(function(a, b) {
     if (a.date < b.date) return -1;
     if (a.date > b.date) return 1;
     return a.id.localeCompare(b.id);
   });
 
-  // রোগী অনুযায়ী চার্জ গ্রুপ করা
+  // à¦°à§‹à¦—à§€ à¦…à¦¨à§à¦¯à¦¾à§Ÿà§€ à¦šà¦¾à¦°à§à¦œ à¦—à§à¦°à§à¦ª à¦•à¦°à¦¾
   var chargesByPatient = {};
   for (var cIdx = 0; cIdx < charges.length; cIdx++) {
     var ch = charges[cIdx];
@@ -286,33 +289,33 @@ function loadSampleData() {
     chargesByPatient[ch.patientId].push(ch);
   }
 
-  // নিশ্চিতভাবে কমপক্ষে ৮ জন রোগীকে বকেয়া (Due) রাখতে সিলেক্ট করা হলো
+  // à¦¨à¦¿à¦¶à§à¦šà¦¿à¦¤à¦­à¦¾à¦¬à§‡ à¦•à¦®à¦ªà¦•à§à¦·à§‡ à§® à¦œà¦¨ à¦°à§‹à¦—à§€à¦•à§‡ à¦¬à¦•à§‡à§Ÿà¦¾ (Due) à¦°à¦¾à¦–à¦¤à§‡ à¦¸à¦¿à¦²à§‡à¦•à§à¦Ÿ à¦•à¦°à¦¾ à¦¹à¦²à§‹
   var duePatientIds = {};
   for (var dp = 1; dp <= 10; dp++) {
-    var pDue = patients[patients.length - dp]; // শেষের দিকের রোগী
+    var pDue = patients[patients.length - dp]; // à¦¶à§‡à¦·à§‡à¦° à¦¦à¦¿à¦•à§‡à¦° à¦°à§‹à¦—à§€
     duePatientIds[pDue.id] = true;
   }
 
-  // প্রতিটি চার্জের জন্য পেমেন্ট নির্ধারণ
+  // à¦ªà§à¦°à¦¤à¦¿à¦Ÿà¦¿ à¦šà¦¾à¦°à§à¦œà§‡à¦° à¦œà¦¨à§à¦¯ à¦ªà§‡à¦®à§‡à¦¨à§à¦Ÿ à¦¨à¦¿à¦°à§à¦§à¦¾à¦°à¦£
   for (var k = 0; k < charges.length; k++) {
     var targetCharge = charges[k];
     var isDesignatedDuePatient = !!duePatientIds[targetCharge.patientId];
 
-    // পেমেন্টের স্ট্যাটাস ভাগ করা
+    // à¦ªà§‡à¦®à§‡à¦¨à§à¦Ÿà§‡à¦° à¦¸à§à¦Ÿà§à¦¯à¦¾à¦Ÿà¦¾à¦¸ à¦­à¦¾à¦— à¦•à¦°à¦¾
     var payRoll = rnd();
     var payAmount = 0;
 
     if (isDesignatedDuePatient && payRoll < 0.70) {
-      // এই ১০ জন রোগীর ক্ষেত্রে বকেয়া তৈরি রাখা হবে (Unpaid বা Partial)
+      // à¦à¦‡ à§§à§¦ à¦œà¦¨ à¦°à§‹à¦—à§€à¦° à¦•à§à¦·à§‡à¦¤à§à¦°à§‡ à¦¬à¦•à§‡à¦¯à¦¼à¦¾ à¦¤à§ˆà¦°à¦¿ à¦°à¦¾à¦–à¦¾ à¦¹à¦¬à§‡ (Unpaid à¦¬à¦¾ Partial)
       if (payRoll < 0.40) {
         payAmount = 0; // Unpaid
       } else {
-        // আংশিক পরিশোধ (Partial)
+        // à¦†à¦‚à¦¶à¦¿à¦• à¦ªà¦°à¦¿à¦¶à§‹à¦§ (Partial)
         payAmount = Math.floor((targetCharge.amount * 0.4) / 50) * 50;
         if (payAmount <= 0) payAmount = Math.min(100, targetCharge.amount);
       }
     } else {
-      // সাধারণ ক্ষেত্রে: ৭০% ফুল, ১৫% পার্ট, ১৫% আনপেইড
+      // à¦¸à¦¾à¦§à¦¾à¦°à¦£ à¦•à§à¦·à§‡à¦¤à§à¦°à§‡: à§­à§¦% à¦«à§à¦², à§§à§«% à¦ªà¦¾à¦°à§à¦Ÿ, à§§à§«% à¦†à¦¨à¦ªà§‡à¦‡à¦¡
       if (payRoll < 0.72) {
         payAmount = targetCharge.amount; // Fully Paid
       } else if (payRoll < 0.86) {
@@ -326,7 +329,7 @@ function loadSampleData() {
     if (payAmount > 0) {
       targetCharge.paid = payAmount;
 
-      // পেমেন্টের তারিখ নির্ধারণ (চার্জের দিন বা পরে, কিন্তু আজকের পরে নয়)
+      // à¦ªà§‡à¦®à§‡à¦¨à§à¦Ÿà§‡à¦° à¦¤à¦¾à¦°à¦¿à¦– à¦¨à¦¿à¦°à§à¦§à¦¾à¦°à¦£ (à¦šà¦¾à¦°à§à¦œà§‡à¦° à¦¦à¦¿à¦¨ à¦¬à¦¾ à¦ªà¦°à§‡, à¦•à¦¿à¦¨à§à¦¤à§ à¦†à¦œà¦•à§‡à¦° à¦ªà¦°à§‡ à¦¨à¦¯à¦¼)
       var pDaysDiff = 0;
       var cParts = targetCharge.date.split("-");
       var tParts = today.split("-");
@@ -354,10 +357,10 @@ function loadSampleData() {
     }
   }
 
-  // নিশ্চিত করা: আজকের তারিখে যেন অন্তত ৮টি পেমেন্ট থাকে (visit ও lab দুটোই)
+  // à¦¨à¦¿à¦¶à§à¦šà¦¿à¦¤ à¦•à¦°à¦¾: à¦†à¦œà¦•à§‡à¦° à¦¤à¦¾à¦°à¦¿à¦–à§‡ à¦¯à§‡à¦¨ à¦…à¦¨à§à¦¤à¦¤ à§®à¦Ÿà¦¿ à¦ªà§‡à¦®à§‡à¦¨à§à¦Ÿ à¦¥à¦¾à¦•à§‡ (visit à¦“ lab à¦¦à§à¦Ÿà§‹à¦‡)
   var todayPayments = payments.filter(function(p) { return p.date === today; });
   if (todayPayments.length < 8) {
-    // কিছু সাম্প্রতিক পেমেন্টের তারিখ আজকের তারিখ বানিয়ে নিশ্চিত করা
+    // à¦•à¦¿à¦›à§ à¦¸à¦¾à¦®à§à¦ªà§à¦°à¦¤à¦¿à¦• à¦ªà§‡à¦®à§‡à¦¨à§à¦Ÿà§‡à¦° à¦¤à¦¾à¦°à¦¿à¦– à¦†à¦œà¦•à§‡à¦° à¦¤à¦¾à¦°à¦¿à¦– à¦¬à¦¾à¦¨à¦¿à§Ÿà§‡ à¦¨à¦¿à¦¶à§à¦šà¦¿à¦¤ à¦•à¦°à¦¾
     var needed = 8 - todayPayments.length;
     var modified = 0;
     for (var m = payments.length - 1; m >= 0 && modified < needed; m--) {
@@ -368,7 +371,7 @@ function loadSampleData() {
     }
   }
 
-  // ল্যাব এবং ভিজিট উভয় ধরনের অন্তত ২টি পেমেন্ট আজ আছে কিনা যাচাই ও ঠিক করা
+  // à¦²à§à¦¯à¦¾à¦¬ à¦à¦¬à¦‚ à¦­à¦¿à¦œà¦¿à¦Ÿ à¦‰à¦­à¦¯à¦¼ à¦§à¦°à¦¨à§‡à¦° à¦…à¦¨à§à¦¤à¦¤ à§¨à¦Ÿà¦¿ à¦ªà§‡à¦®à§‡à¦¨à§à¦Ÿ à¦†à¦œ à¦†à¦›à§‡ à¦•à¦¿à¦¨à¦¾ à¦¯à¦¾à¦šà¦¾à¦‡ à¦“ à¦ à¦¿à¦• à¦•à¦°à¦¾
   var todayVisits = payments.filter(function(p) { return p.date === today && p.type === "visit"; });
   var todayLabs = payments.filter(function(p) { return p.date === today && p.type === "lab"; });
 
@@ -390,7 +393,7 @@ function loadSampleData() {
   }
 
   /* ----------------------------------------------------------
-     ৬. ডেটাবেসে সংরক্ষণ
+     à§¬. à¦¡à§‡à¦Ÿà¦¾à¦¬à§‡à¦¸à§‡ à¦¸à¦‚à¦°à¦•à§à¦·à¦£
      ---------------------------------------------------------- */
   save("hms_doctors", doctors);
   save("hms_patients", patients);
@@ -399,7 +402,7 @@ function loadSampleData() {
   save("hms_charges", charges);
   save("hms_payments", payments);
 
-  // কতজন রোগীর বকেয়া আছে হিসাব
+  // à¦•à¦¤à¦œà¦¨ à¦°à§‹à¦—à§€à¦° à¦¬à¦•à§‡à¦¯à¦¼à¦¾ à¦†à¦›à§‡ à¦¹à¦¿à¦¸à¦¾à¦¬
   var patientsWithDue = 0;
   for (var pi = 0; pi < patients.length; pi++) {
     if (getPatientDue(patients[pi].id) > 0) {
@@ -407,7 +410,7 @@ function loadSampleData() {
     }
   }
 
-  // আজ কত টাকা পেমেন্ট হলো
+  // à¦†à¦œ à¦•à¦¤ à¦Ÿà¦¾à¦•à¦¾ à¦ªà§‡à¦®à§‡à¦¨à§à¦Ÿ à¦¹à¦²à§‹
   var todayCollection = 0;
   for (var ti = 0; ti < payments.length; ti++) {
     if (payments[ti].date === today) {
@@ -415,7 +418,7 @@ function loadSampleData() {
     }
   }
 
-  // সফল মেসেজ দেখানো (English)
+  // à¦¸à¦«à¦² à¦®à§‡à¦¸à§‡à¦œ à¦¦à§‡à¦–à¦¾à¦¨à§‹ (English)
   var summaryMsg = "Sample Data Loaded Successfully!\n\n" +
     "- Doctors: " + doctors.length + "\n" +
     "- Patients: " + patients.length + " (" + patientsWithDue + " have due)\n" +

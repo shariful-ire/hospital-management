@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Lab Tests - Shanti Care Hospital</title>
+  <title>Lab Tests - LifeBridge Hospital</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -13,8 +13,8 @@
     <main class="main-content">
       <div class="page-header flex justify-between items-center flex-wrap gap-2">
         <div>
-          <h1 class="page-title">🧪 Laboratory Tests & Diagnostics</h1>
-          <p class="page-subtitle">Shanti Care Hospital - Diagnostics Management</p>
+          <h1 class="page-title">ðŸ§ª Laboratory Tests & Diagnostics</h1>
+          <p class="page-subtitle">LifeBridge Hospital - Diagnostics Management</p>
         </div>
         <div class="flex gap-2">
           <span class="badge badge-warning" id="pendingCounter">Pending: 0</span>
@@ -25,15 +25,15 @@
       <div id="alertBox"></div>
 
       <div class="grid grid-2 mb-4">
-        <!-- ফর্ম -->
+        <!-- à¦«à¦°à§à¦® -->
         <div class="card">
           <div class="card-header">
-            <h2 class="card-title">📝 Order Laboratory Tests</h2>
+            <h2 class="card-title">ðŸ“ Order Laboratory Tests</h2>
           </div>
           <div class="card-body">
             <form id="labOrderForm" onsubmit="handleCreateLabOrder(event)">
               <div class="form-group">
-                <label class="form-label" for="patientSearch">🔍 Filter Patient</label>
+                <label class="form-label" for="patientSearch">ðŸ” Filter Patient</label>
                 <input 
                   type="text" 
                   id="patientSearch" 
@@ -67,16 +67,16 @@
               </div>
 
               <button type="submit" class="btn btn-primary" style="width: 100%;">
-                💾 Confirm & Place Lab Orders
+                ðŸ’¾ Confirm & Place Lab Orders
               </button>
             </form>
           </div>
         </div>
 
-        <!-- প্রাইস লিস্ট -->
+        <!-- à¦ªà§à¦°à¦¾à¦‡à¦¸ à¦²à¦¿à¦¸à§à¦Ÿ -->
         <div class="card">
           <div class="card-header flex justify-between items-center">
-            <h2 class="card-title">📋 Official Test Price List</h2>
+            <h2 class="card-title">ðŸ“‹ Official Test Price List</h2>
             <span class="badge badge-info" id="testCountBadge">15 Tests</span>
           </div>
           <div class="card-body p-0">
@@ -96,10 +96,10 @@
         </div>
       </div>
 
-      <!-- হিস্টোরি ও রেজাল্ট টেবিল -->
+      <!-- à¦¹à¦¿à¦¸à§à¦Ÿà§‹à¦°à¦¿ à¦“ à¦°à§‡à¦œà¦¾à¦²à§à¦Ÿ à¦Ÿà§‡à¦¬à¦¿à¦² -->
       <div class="card">
         <div class="card-header flex justify-between items-center flex-wrap gap-2">
-          <h2 class="card-title">🔬 Diagnostic Orders & Results</h2>
+          <h2 class="card-title">ðŸ”¬ Diagnostic Orders & Results</h2>
           <div class="flex items-center gap-2">
             <label for="statusFilter" class="form-label mb-0" style="margin-bottom: 0;">Status:</label>
             <select id="statusFilter" class="form-control" style="width: auto; padding: 4px 10px;" onchange="renderOrdersTable()">
@@ -133,12 +133,12 @@
     </main>
   </div>
 
-  <!-- রেজাল্ট লেখার মডাল -->
+  <!-- à¦°à§‡à¦œà¦¾à¦²à§à¦Ÿ à¦²à§‡à¦–à¦¾à¦° à¦®à¦¡à¦¾à¦² -->
   <div id="resultModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.6); z-index: 999; align-items: center; justify-content: center; padding: 20px;">
     <div class="card" style="width: 100%; max-width: 500px; box-shadow: 0 10px 25px rgba(0,0,0,0.2);">
       <div class="card-header flex justify-between items-center">
-        <h3 class="card-title">📝 Enter Diagnostic Findings</h3>
-        <button type="button" class="btn btn-secondary btn-sm" onclick="closeResultModal()">✕</button>
+        <h3 class="card-title">ðŸ“ Enter Diagnostic Findings</h3>
+        <button type="button" class="btn btn-secondary btn-sm" onclick="closeResultModal()">âœ•</button>
       </div>
       <div class="card-body">
         <form id="resultForm" onsubmit="submitLabResult(event)">
@@ -161,7 +161,7 @@
 
           <div class="flex justify-between items-center mt-3">
             <button type="button" class="btn btn-secondary" onclick="closeResultModal()">Cancel</button>
-            <button type="submit" class="btn btn-primary">✅ Save & Complete Test</button>
+            <button type="submit" class="btn btn-primary">âœ… Save & Complete Test</button>
           </div>
         </form>
       </div>
@@ -319,8 +319,8 @@
           : `<span class="text-muted">Awaiting lab analysis</span>`;
 
         const actionBtn = isDone
-          ? `<span style="color: var(--green); font-weight: 600;">✓ Ready</span>`
-          : `<button type="button" class="btn btn-secondary btn-sm" onclick="openResultModal('${o.id}', '${escapeHtml(o.testName)}', '${escapeHtml(getPatientName(o.patientId))}')">✍️ Enter Result</button>`;
+          ? `<span style="color: var(--green); font-weight: 600;">âœ“ Ready</span>`
+          : `<button type="button" class="btn btn-secondary btn-sm" onclick="openResultModal('${o.id}', '${escapeHtml(o.testName)}', '${escapeHtml(getPatientName(o.patientId))}')">âœï¸ Enter Result</button>`;
 
         return `
           <tr>

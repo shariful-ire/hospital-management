@@ -7,5 +7,5 @@ module.exports = (req, res) => {
   res.setHeader('Content-Type', 'application/json; charset=utf-8');
   res.setHeader('Cache-Control', 'no-store');
   res.statusCode = 200;
-  res.end(JSON.stringify({ connected: Boolean(getKey()), canConnect: false, host: 'vercel' }));
+  res.end(JSON.stringify({ keyConfigured: Boolean(getKey()), connected: Boolean(getKey()) }));
 };

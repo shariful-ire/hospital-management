@@ -1,27 +1,27 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Patients Directory - Shanti Care Hospital</title>
+  <title>Patients Directory - LifeBridge Hospital</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <div class="app-layout">
-    <!-- বাম পাশের সাইডবার -->
+    <!-- à¦¬à¦¾à¦® à¦ªà¦¾à¦¶à§‡à¦° à¦¸à¦¾à¦‡à¦¡à¦¬à¦¾à¦° -->
     <aside id="sidebar" class="sidebar"></aside>
 
-    <!-- মূল কনটেন্ট -->
+    <!-- à¦®à§‚à¦² à¦•à¦¨à¦Ÿà§‡à¦¨à§à¦Ÿ -->
     <main class="main-content">
       <div class="page-header">
         <h1 class="page-title">Patient Management</h1>
         <p class="page-subtitle">Register new patients and look up existing medical profiles</p>
       </div>
 
-      <!-- সফল রেজিস্ট্রেশন বার্তা -->
+      <!-- à¦¸à¦«à¦² à¦°à§‡à¦œà¦¿à¦¸à§à¦Ÿà§à¦°à§‡à¦¶à¦¨ à¦¬à¦¾à¦°à§à¦¤à¦¾ -->
       <div id="patientAlert" class="alert alert-success" style="display: none;"></div>
 
-      <!-- নতুন রোগী যোগ করার ফর্ম -->
+      <!-- à¦¨à¦¤à§à¦¨ à¦°à§‹à¦—à§€ à¦¯à§‹à¦— à¦•à¦°à¦¾à¦° à¦«à¦°à§à¦® -->
       <section class="card mb-4">
         <div class="card-header">
           <h2 class="card-title">Register New Patient</h2>
@@ -29,21 +29,21 @@
         <div class="card-body">
           <form id="patientForm" novalidate>
             <div class="grid grid-3">
-              <!-- রোগীর নাম -->
+              <!-- à¦°à§‹à¦—à§€à¦° à¦¨à¦¾à¦® -->
               <div class="form-group">
                 <label class="form-label" for="patientName">Full Name *</label>
                 <input type="text" id="patientName" class="form-control" placeholder="e.g. Mohammad Rahim" required>
                 <div id="nameError" class="form-error">Patient name is required.</div>
               </div>
 
-              <!-- বয়স -->
+              <!-- à¦¬à§Ÿà¦¸ -->
               <div class="form-group">
                 <label class="form-label" for="patientAge">Age (Years) *</label>
                 <input type="number" id="patientAge" class="form-control" min="0" max="120" placeholder="e.g. 35" required>
                 <div id="ageError" class="form-error">Please enter a valid age between 0 and 120.</div>
               </div>
 
-              <!-- লিঙ্গ -->
+              <!-- à¦²à¦¿à¦™à§à¦— -->
               <div class="form-group">
                 <label class="form-label" for="patientSex">Sex *</label>
                 <select id="patientSex" class="form-control" required>
@@ -55,41 +55,41 @@
             </div>
 
             <div class="grid grid-2 mt-2">
-              <!-- ফোন নম্বর -->
+              <!-- à¦«à§‹à¦¨ à¦¨à¦®à§à¦¬à¦° -->
               <div class="form-group">
                 <label class="form-label" for="patientPhone">Phone Number *</label>
                 <input type="tel" id="patientPhone" class="form-control" placeholder="e.g. 01712345678" required>
                 <div id="phoneError" class="form-error">A valid phone number is required.</div>
               </div>
 
-              <!-- ঠিকানা -->
+              <!-- à¦ à¦¿à¦•à¦¾à¦¨à¦¾ -->
               <div class="form-group">
                 <label class="form-label" for="patientAddress">Address / Area</label>
                 <input type="text" id="patientAddress" class="form-control" placeholder="e.g. Mirpur-10, Dhaka">
               </div>
             </div>
 
-            <!-- সাবমিট বাটন -->
+            <!-- à¦¸à¦¾à¦¬à¦®à¦¿à¦Ÿ à¦¬à¦¾à¦Ÿà¦¨ -->
             <div class="mt-3 flex justify-between items-center">
               <span class="text-muted" style="font-size: 13px;">* Registration date will be automatically set to today.</span>
               <button type="submit" class="btn btn-primary">
-                💾 Save Patient Profile
+                ðŸ’¾ Save Patient Profile
               </button>
             </div>
           </form>
         </div>
       </section>
 
-      <!-- রোগীদের তালিকা ও লাইভ সার্চ বক্স -->
+      <!-- à¦°à§‹à¦—à§€à¦¦à§‡à¦° à¦¤à¦¾à¦²à¦¿à¦•à¦¾ à¦“ à¦²à¦¾à¦‡à¦­ à¦¸à¦¾à¦°à§à¦š à¦¬à¦•à§à¦¸ -->
       <section class="card">
         <div class="card-header flex justify-between items-center flex-wrap gap-2">
           <div>
             <h2 class="card-title">Registered Patients Directory</h2>
             <span id="patientCountBadge" class="text-muted" style="font-size: 13px;">Loading count...</span>
           </div>
-          <!-- লাইভ সার্চ ফিল্টার ইনপুট -->
+          <!-- à¦²à¦¾à¦‡à¦­ à¦¸à¦¾à¦°à§à¦š à¦«à¦¿à¦²à§à¦Ÿà¦¾à¦° à¦‡à¦¨à¦ªà§à¦Ÿ -->
           <div style="min-width: 280px;">
-            <input type="search" id="searchPatient" class="form-control" placeholder="🔍 Search by Name, Phone or ID (e.g. P-0001)...">
+            <input type="search" id="searchPatient" class="form-control" placeholder="ðŸ” Search by Name, Phone or ID (e.g. P-0001)...">
           </div>
         </div>
         <div class="card-body p-0">
@@ -107,7 +107,7 @@
                 </tr>
               </thead>
               <tbody id="patientsTableBody">
-                <!-- জাভাস্ক্রিপ্ট দিয়ে তালিকা আসবে -->
+                <!-- à¦œà¦¾à¦­à¦¾à¦¸à§à¦•à§à¦°à¦¿à¦ªà§à¦Ÿ à¦¦à¦¿à§Ÿà§‡ à¦¤à¦¾à¦²à¦¿à¦•à¦¾ à¦†à¦¸à¦¬à§‡ -->
               </tbody>
             </table>
           </div>
@@ -116,33 +116,33 @@
     </main>
   </div>
 
-  <!-- স্ক্রিপ্ট ফাইল -->
+  <!-- à¦¸à§à¦•à§à¦°à¦¿à¦ªà§à¦Ÿ à¦«à¦¾à¦‡à¦² -->
   <script src="db.js"></script>
   <script src="sample-data.js"></script>
   <script>
-    // গ্লোবাল ভেরিয়েবল
+    // à¦—à§à¦²à§‹à¦¬à¦¾à¦² à¦­à§‡à¦°à¦¿à§Ÿà§‡à¦¬à¦²
     var allPatients = [];
 
     document.addEventListener('DOMContentLoaded', function () {
-      // সাইডবার রেন্ডার
+      // à¦¸à¦¾à¦‡à¦¡à¦¬à¦¾à¦° à¦°à§‡à¦¨à§à¦¡à¦¾à¦°
       renderSidebar('patients');
 
-      // রোগীদের তালিকা লোড করা
+      // à¦°à§‹à¦—à§€à¦¦à§‡à¦° à¦¤à¦¾à¦²à¦¿à¦•à¦¾ à¦²à§‹à¦¡ à¦•à¦°à¦¾
       loadPatientsList();
 
-      // ফর্ম সাবমিট ইভেন্ট হ্যান্ডলার
+      // à¦«à¦°à§à¦® à¦¸à¦¾à¦¬à¦®à¦¿à¦Ÿ à¦‡à¦­à§‡à¦¨à§à¦Ÿ à¦¹à§à¦¯à¦¾à¦¨à§à¦¡à¦²à¦¾à¦°
       document.getElementById('patientForm').addEventListener('submit', handlePatientSubmit);
 
-      // লাইভ সার্চ ইনপুট ইভেন্ট
+      // à¦²à¦¾à¦‡à¦­ à¦¸à¦¾à¦°à§à¦š à¦‡à¦¨à¦ªà§à¦Ÿ à¦‡à¦­à§‡à¦¨à§à¦Ÿ
       document.getElementById('searchPatient').addEventListener('input', function (e) {
         filterPatientsTable(e.target.value);
       });
     });
 
-    // রোগীদের তালিকা মেমোরিতে লোড ও টেবিল প্রদর্শন
+    // à¦°à§‹à¦—à§€à¦¦à§‡à¦° à¦¤à¦¾à¦²à¦¿à¦•à¦¾ à¦®à§‡à¦®à§‹à¦°à¦¿à¦¤à§‡ à¦²à§‹à¦¡ à¦“ à¦Ÿà§‡à¦¬à¦¿à¦² à¦ªà§à¦°à¦¦à¦°à§à¦¶à¦¨
     function loadPatientsList() {
       allPatients = load('hms_patients');
-      // নতুন নিবন্ধিত রোগী সবার আগে (Newest first)
+      // à¦¨à¦¤à§à¦¨ à¦¨à¦¿à¦¬à¦¨à§à¦§à¦¿à¦¤ à¦°à§‹à¦—à§€ à¦¸à¦¬à¦¾à¦° à¦†à¦—à§‡ (Newest first)
       allPatients.sort(function (a, b) {
         if (a.regDate !== b.regDate) {
           return b.regDate.localeCompare(a.regDate);
@@ -153,7 +153,7 @@
       renderTableRows(allPatients);
     }
 
-    // টেবিলের রো রেন্ডার করার ফাংশন
+    // à¦Ÿà§‡à¦¬à¦¿à¦²à§‡à¦° à¦°à§‹ à¦°à§‡à¦¨à§à¦¡à¦¾à¦° à¦•à¦°à¦¾à¦° à¦«à¦¾à¦‚à¦¶à¦¨
     function renderTableRows(patientList) {
       var tbody = document.getElementById('patientsTableBody');
       var badge = document.getElementById('patientCountBadge');
@@ -186,7 +186,7 @@
       }
     }
 
-    // লাইভ সার্চ ফিল্টার ফাংশন (Name, Phone বা ID দিয়ে সার্চ)
+    // à¦²à¦¾à¦‡à¦­ à¦¸à¦¾à¦°à§à¦š à¦«à¦¿à¦²à§à¦Ÿà¦¾à¦° à¦«à¦¾à¦‚à¦¶à¦¨ (Name, Phone à¦¬à¦¾ ID à¦¦à¦¿à§Ÿà§‡ à¦¸à¦¾à¦°à§à¦š)
     function filterPatientsTable(query) {
       var q = (query || '').trim().toLowerCase();
       if (!q) {
@@ -205,11 +205,11 @@
       renderTableRows(filtered);
     }
 
-    // ফর্ম সাবমিশন এবং ভ্যালিডেশন হ্যান্ডলার
+    // à¦«à¦°à§à¦® à¦¸à¦¾à¦¬à¦®à¦¿à¦¶à¦¨ à¦à¦¬à¦‚ à¦­à§à¦¯à¦¾à¦²à¦¿à¦¡à§‡à¦¶à¦¨ à¦¹à§à¦¯à¦¾à¦¨à§à¦¡à¦²à¦¾à¦°
     function handlePatientSubmit(event) {
       event.preventDefault();
 
-      // ইনপুট ভ্যালু নেওয়া
+      // à¦‡à¦¨à¦ªà§à¦Ÿ à¦­à§à¦¯à¦¾à¦²à§ à¦¨à§‡à¦“à§Ÿà¦¾
       var nameInput = document.getElementById('patientName');
       var ageInput = document.getElementById('patientAge');
       var sexSelect = document.getElementById('patientSex');
@@ -222,7 +222,7 @@
       var phone = phoneInput.value.trim();
       var address = addressInput.value.trim();
 
-      // এরর মেসেজ রিসেট
+      // à¦à¦°à¦° à¦®à§‡à¦¸à§‡à¦œ à¦°à¦¿à¦¸à§‡à¦Ÿ
       document.getElementById('nameError').style.display = 'none';
       document.getElementById('ageError').style.display = 'none';
       document.getElementById('phoneError').style.display = 'none';
@@ -246,7 +246,7 @@
 
       if (hasError) return;
 
-      // db.js এর addPatient ফাংশন দিয়ে নতুন রোগী সেভ করা
+      // db.js à¦à¦° addPatient à¦«à¦¾à¦‚à¦¶à¦¨ à¦¦à¦¿à§Ÿà§‡ à¦¨à¦¤à§à¦¨ à¦°à§‹à¦—à§€ à¦¸à§‡à¦­ à¦•à¦°à¦¾
       var newPatient = addPatient({
         name: name,
         age: age,
@@ -256,23 +256,23 @@
         regDate: todayStr()
       });
 
-      // ফর্ম ক্লিয়ার করা
+      // à¦«à¦°à§à¦® à¦•à§à¦²à¦¿à§Ÿà¦¾à¦° à¦•à¦°à¦¾
       document.getElementById('patientForm').reset();
 
-      // সাফল্য বার্তা প্রদর্শন
+      // à¦¸à¦¾à¦«à¦²à§à¦¯ à¦¬à¦¾à¦°à§à¦¤à¦¾ à¦ªà§à¦°à¦¦à¦°à§à¦¶à¦¨
       var alertBox = document.getElementById('patientAlert');
-      alertBox.textContent = '✅ Patient registered successfully! Assigned ID: ' + newPatient.id + ' (' + newPatient.name + ')';
+      alertBox.textContent = 'âœ… Patient registered successfully! Assigned ID: ' + newPatient.id + ' (' + newPatient.name + ')';
       alertBox.style.display = 'block';
 
-      // ৩ সেকেন্ড পর সাফল্য বার্তা মিলিয়ে যাওয়া
+      // à§© à¦¸à§‡à¦•à§‡à¦¨à§à¦¡ à¦ªà¦° à¦¸à¦¾à¦«à¦²à§à¦¯ à¦¬à¦¾à¦°à§à¦¤à¦¾ à¦®à¦¿à¦²à¦¿à§Ÿà§‡ à¦¯à¦¾à¦“à§Ÿà¦¾
       setTimeout(function () {
         alertBox.style.display = 'none';
       }, 5000);
 
-      // টেবিল রিফ্রেশ করা
+      // à¦Ÿà§‡à¦¬à¦¿à¦² à¦°à¦¿à¦«à§à¦°à§‡à¦¶ à¦•à¦°à¦¾
       loadPatientsList();
 
-      // সার্চ বক্স ক্লিয়ার থাকলে পুরো নতুন তালিকাই দেখাবে
+      // à¦¸à¦¾à¦°à§à¦š à¦¬à¦•à§à¦¸ à¦•à§à¦²à¦¿à§Ÿà¦¾à¦° à¦¥à¦¾à¦•à¦²à§‡ à¦ªà§à¦°à§‹ à¦¨à¦¤à§à¦¨ à¦¤à¦¾à¦²à¦¿à¦•à¦¾à¦‡ à¦¦à§‡à¦–à¦¾à¦¬à§‡
       document.getElementById('searchPatient').value = '';
     }
   </script>

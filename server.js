@@ -1,5 +1,5 @@
-// server.js — Shanti Care Hospital-এর লোকাল ওয়েব সার্ভার ও AI চ্যাট ব্যাকএন্ড
-// বাংলা: Node.js-এর built-in module ব্যবহার করা হয়েছে; কোনো npm package লাগে না।
+﻿// server.js â€” LifeBridge Hospital-à¦à¦° à¦²à§‹à¦•à¦¾à¦² à¦“à§Ÿà§‡à¦¬ à¦¸à¦¾à¦°à§à¦­à¦¾à¦° à¦“ AI à¦šà§à¦¯à¦¾à¦Ÿ à¦¬à§à¦¯à¦¾à¦•à¦à¦¨à§à¦¡
+// à¦¬à¦¾à¦‚à¦²à¦¾: Node.js-à¦à¦° built-in module à¦¬à§à¦¯à¦¬à¦¹à¦¾à¦° à¦•à¦°à¦¾ à¦¹à§Ÿà§‡à¦›à§‡; à¦•à§‹à¦¨à§‹ npm package à¦²à¦¾à¦—à§‡ à¦¨à¦¾à¥¤
 
 'use strict';
 
@@ -8,7 +8,7 @@ const fs = require('fs');
 const path = require('path');
 const https = require('https');
 
-// বাংলা: .env ফাইল থাকলে সেখান থেকেও কী পড়ার স্বয়ংক্রিয় ব্যবস্থা
+// à¦¬à¦¾à¦‚à¦²à¦¾: .env à¦«à¦¾à¦‡à¦² à¦¥à¦¾à¦•à¦²à§‡ à¦¸à§‡à¦–à¦¾à¦¨ à¦¥à§‡à¦•à§‡à¦“ à¦•à§€ à¦ªà§œà¦¾à¦° à¦¸à§à¦¬à§Ÿà¦‚à¦•à§à¦°à¦¿à§Ÿ à¦¬à§à¦¯à¦¬à¦¸à§à¦¥à¦¾
 function loadDotEnvIfExists() {
   try {
     const envPath = path.join(__dirname, '.env');
@@ -117,7 +117,7 @@ function requestChatterMate(apiKey, method, requestPath, payload) {
     const headers = {
       'X-API-Key': apiKey,
       'Accept': method === 'GET' ? 'application/json' : 'text/event-stream, application/json',
-      'User-Agent': 'Shanti-Care-Hospital/1.0'
+      'User-Agent': 'LifeBridge-Hospital/1.0'
     };
 
     if (method !== 'GET') {
@@ -221,7 +221,7 @@ function parseModelChunkStream(rawText) {
 async function askChatterMate(question, data) {
   const keyToUse = activeApiKey;
   if (!keyToUse) {
-    throw Object.assign(new Error('No API key is connected. Open Settings (⚙️) and connect your ChatterMate API key.'), { statusCode: 400 });
+    throw Object.assign(new Error('No API key is connected. Open Settings (âš™ï¸) and connect your ChatterMate API key.'), { statusCode: 400 });
   }
 
   if (!cachedModelId || keyToUse !== activeApiKey) {
@@ -267,7 +267,7 @@ async function handleConnect(req, res) {
 }
 
 function handleStatus(res) {
-  return sendJson(res, 200, { connected: Boolean(activeApiKey), canConnect: true, host: 'local' });
+  return sendJson(res, 200, { connected: Boolean(activeApiKey), keyConfigured: Boolean(activeApiKey), canConnect: true, host: 'local' });
 }
 
 function handleDisconnect(res) {
@@ -333,6 +333,10 @@ const server = http.createServer(async (req, res) => {
     return handleStatus(res);
   }
 
+  if (req.method === 'GET' && route === '/api/status') {
+    return sendJson(res, 200, { keyConfigured: Boolean(activeApiKey) });
+  }
+
   if (req.method === 'POST' && route === '/api/settings/connect') {
     return handleConnect(req, res);
   }
@@ -370,11 +374,7 @@ const server = http.createServer(async (req, res) => {
 
 const HOST = process.env.HOST || '127.0.0.1';
 server.listen(PORT, HOST, () => {
-  console.log('========================================================');
-  console.log('Shanti Care Hospital local server is running.');
-  console.log(`Port: ${PORT}`);
-  console.log('Open http://localhost:' + PORT + ' in your browser.');
-  console.log('========================================================');
+  console.log('Running at http://localhost:' + PORT);
 });
 
 
