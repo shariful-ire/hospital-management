@@ -9,7 +9,7 @@
     var btn = document.createElement('button');
     btn.className = 'hms-menu-btn';
     btn.setAttribute('aria-label', 'Open menu');
-    btn.textContent = '☰';
+    btn.textContent = 'Menu';
     var back = document.createElement('div');
     back.className = 'hms-backdrop';
     function toggle(open) {
@@ -27,7 +27,7 @@
     var title = document.querySelector('.page-header .page-title');
     if (!title || !/Dashboard/i.test(title.textContent) || document.querySelector('.hms-greeting')) return;
     var h = new Date().getHours();
-    var greet = h < 12 ? 'Good morning ☀️' : h < 17 ? 'Good afternoon 🌤️' : 'Good evening 🌙';
+    var greet = h < 12 ? 'Good morning' : h < 17 ? 'Good afternoon' : 'Good evening';
     var date = new Date().toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
     var el = document.createElement('div');
     el.className = 'hms-greeting';

@@ -13,7 +13,7 @@
     <main class="main-content">
       <div class="page-header flex justify-between items-center flex-wrap gap-2">
         <div>
-          <h1 class="page-title">🧪 Laboratory Tests & Diagnostics</h1>
+          <h1 class="page-title">Laboratory Tests & Diagnostics</h1>
           <p class="page-subtitle">LifeBridge Hospital - Diagnostics Management</p>
         </div>
         <div class="flex gap-2">
@@ -28,12 +28,12 @@
         <!-- ফর্ম -->
         <div class="card">
           <div class="card-header">
-            <h2 class="card-title">📝 Order Laboratory Tests</h2>
+            <h2 class="card-title">Order Laboratory Tests</h2>
           </div>
           <div class="card-body">
             <form id="labOrderForm" onsubmit="handleCreateLabOrder(event)">
               <div class="form-group">
-                <label class="form-label" for="patientSearch">🔍 Filter Patient</label>
+                <label class="form-label" for="patientSearch">Filter Patient</label>
                 <input 
                   type="text" 
                   id="patientSearch" 
@@ -67,7 +67,7 @@
               </div>
 
               <button type="submit" class="btn btn-primary" style="width: 100%;">
-                💾 Confirm & Place Lab Orders
+                Confirm & Place Lab Orders
               </button>
             </form>
           </div>
@@ -76,7 +76,7 @@
         <!-- প্রাইস লিস্ট -->
         <div class="card">
           <div class="card-header flex justify-between items-center">
-            <h2 class="card-title">📋 Official Test Price List</h2>
+            <h2 class="card-title">Official Test Price List</h2>
             <span class="badge badge-info" id="testCountBadge">15 Tests</span>
           </div>
           <div class="card-body p-0">
@@ -99,7 +99,7 @@
       <!-- হিস্টোরি ও রেজাল্ট টেবিল -->
       <div class="card">
         <div class="card-header flex justify-between items-center flex-wrap gap-2">
-          <h2 class="card-title">🔬 Diagnostic Orders & Results</h2>
+          <h2 class="card-title">Diagnostic Orders & Results</h2>
           <div class="flex items-center gap-2">
             <label for="statusFilter" class="form-label mb-0" style="margin-bottom: 0;">Status:</label>
             <select id="statusFilter" class="form-control" style="width: auto; padding: 4px 10px;" onchange="renderOrdersTable()">
@@ -137,8 +137,8 @@
   <div id="resultModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.6); z-index: 999; align-items: center; justify-content: center; padding: 20px;">
     <div class="card" style="width: 100%; max-width: 500px; box-shadow: 0 10px 25px rgba(0,0,0,0.2);">
       <div class="card-header flex justify-between items-center">
-        <h3 class="card-title">📝 Enter Diagnostic Findings</h3>
-        <button type="button" class="btn btn-secondary btn-sm" onclick="closeResultModal()">✕</button>
+        <h3 class="card-title">Enter Diagnostic Findings</h3>
+        <button type="button" class="btn btn-secondary btn-sm" onclick="closeResultModal()">Close</button>
       </div>
       <div class="card-body">
         <form id="resultForm" onsubmit="submitLabResult(event)">
@@ -161,7 +161,7 @@
 
           <div class="flex justify-between items-center mt-3">
             <button type="button" class="btn btn-secondary" onclick="closeResultModal()">Cancel</button>
-            <button type="submit" class="btn btn-primary">✅ Save & Complete Test</button>
+            <button type="submit" class="btn btn-primary">Save & Complete Test</button>
           </div>
         </form>
       </div>
@@ -322,7 +322,7 @@
           : `<span class="text-muted">Awaiting lab analysis</span>`;
 
         const actionBtn = isDone
-          ? `<span style="color: var(--green); font-weight: 600;">✓ Ready</span>`
+          ? `<span style="color: var(--green); font-weight: 600;">Ready</span>`
           : `<button type="button" class="btn btn-secondary btn-sm" data-order-id="${escapeHtml(o.id)}">Enter Result</button>`;
 
         return `

@@ -221,7 +221,7 @@ function parseModelChunkStream(rawText) {
 async function askChatterMate(question, data, providedKey) {
   const keyToUse = (typeof providedKey === 'string' && providedKey.trim()) || activeApiKey;
   if (!keyToUse) {
-    throw Object.assign(new Error('No API key is connected. Open Settings (⚙️) and connect your ChatterMate API key.'), { statusCode: 400 });
+    throw Object.assign(new Error('No API key is connected. Open Settings and connect your ChatterMate API key.'), { statusCode: 400 });
   }
 
   if (!cachedModelId || keyToUse !== activeApiKey) {

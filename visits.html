@@ -42,7 +42,7 @@
               <div class="form-group">
                 <label class="form-label" for="patientSelect">Select Patient *</label>
                 <!-- রোগীর দ্রুত সার্চ বক্স -->
-                <input type="text" id="patientFilterInput" class="form-control mb-1" placeholder="🔍 Type to filter patient dropdown..." style="font-size: 13px; padding: 6px 10px;">
+                <input type="text" id="patientFilterInput" class="form-control mb-1" placeholder="Type to filter patient dropdown..." style="font-size: 13px; padding: 6px 10px;">
                 <select id="patientSelect" class="form-control" required>
                   <option value="">-- Choose a patient --</option>
                 </select>
@@ -91,10 +91,10 @@
             <!-- সাবমিট বাটন -->
             <div class="mt-3 flex justify-between items-center">
               <span class="text-muted" style="font-size: 13px;">
-                ⚡ Note: Saving creates an automated billing charge under this patient's account.
+                Note: Saving creates an automated billing charge under this patient's account.
               </span>
               <button type="submit" class="btn btn-primary">
-                🩺 Save Visit Record
+                Save Visit Record
               </button>
             </div>
           </form>
@@ -377,7 +377,7 @@
 
       // সাফল্য বার্তা প্রদর্শন
       var alertBox = document.getElementById('visitAlert');
-      alertBox.innerHTML = '✅ Visit recorded successfully with ID: <strong>' + escapeHtml(newVisit.id) + '</strong> for patient <strong>' + escapeHtml(patientName) + '</strong>.<br>' +
+      alertBox.innerHTML = 'Visit recorded successfully with ID: <strong>' + escapeHtml(newVisit.id) + '</strong> for patient <strong>' + escapeHtml(patientName) + '</strong>.<br>' +
                            'A consultation charge of ' + formatMoney(fee) + ' was created. Patient\'s total outstanding due is now: <strong>' + formatMoney(patientDue) + '</strong>.';
       alertBox.style.display = 'block';
 

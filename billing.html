@@ -68,7 +68,7 @@
 
     <main class="main-content">
       <div class="page-header">
-        <h1 class="page-title">💳 Patient Billing & Payments</h1>
+        <h1 class="page-title">Patient Billing & Payments</h1>
         <p class="page-subtitle">Track patient charges, collect payments, and issue money receipts</p>
       </div>
 
@@ -82,7 +82,7 @@
         <div class="card-body">
           <div class="grid grid-2">
             <div class="form-group">
-              <label class="form-label" for="patientSearch">🔍 Filter Patient (name, phone or ID):</label>
+              <label class="form-label" for="patientSearch">Filter Patient (name, phone or ID):</label>
               <input type="text" id="patientSearch" class="form-control" placeholder="Type name or phone to filter...">
             </div>
             <div class="form-group">
@@ -144,7 +144,7 @@
               </div>
 
               <button type="submit" id="btnSubmitPayment" class="btn btn-primary" style="width: 100%;">
-                💳 Process Payment
+                Process Payment
               </button>
             </form>
           </div>
@@ -154,7 +154,7 @@
           <div class="card-header flex justify-between items-center">
             <h2 class="card-title">3. Money Receipt</h2>
             <button id="btnPrintReceipt" class="btn btn-secondary btn-sm" style="display: none;" onclick="window.print()">
-              🖨️ Print Receipt
+              Print Receipt
             </button>
           </div>
           <div class="card-body">
@@ -253,7 +253,7 @@
       <!-- ৪. বকেয়া তালিকা -->
       <div class="card">
         <div class="card-header flex justify-between items-center">
-          <h2 class="card-title">⚠️ Patients with Outstanding Due</h2>
+          <h2 class="card-title">Patients with Outstanding Due</h2>
           <span id="duePatientsCount" class="badge badge-warning">0 Patients</span>
         </div>
         <div class="card-body p-0">
@@ -453,7 +453,7 @@
       duePatientsTableBody.innerHTML = '';
 
       if (dueList.length === 0) {
-        duePatientsTableBody.innerHTML = '<tr><td colspan="5" class="text-center text-muted" style="padding:16px;">🎉 Great! No patients have outstanding dues.</td></tr>';
+        duePatientsTableBody.innerHTML = '<tr><td colspan="5" class="text-center text-muted" style="padding:16px;">No patients have outstanding dues.</td></tr>';
         return;
       }
 
@@ -467,7 +467,7 @@
           <td style="color: var(--red); font-weight: 700;">${formatMoney(item.due)}</td>
           <td>
             <button class="btn btn-secondary btn-sm" data-patient-id="${escapeHtml(item.id)}">
-              Select & Pay ➔
+              Select & Pay
             </button>
           </td>
         `;

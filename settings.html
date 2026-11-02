@@ -92,13 +92,13 @@
             <h1>Workspace settings</h1>
             <p>Personalise the hospital workspace, manage the AI connection, and protect your local demo data.</p>
           </div>
-          <div class="hero-mark" aria-hidden="true">⚙️</div>
+          <div class="hero-mark" aria-hidden="true">ST</div>
         </header>
 
         <div class="settings-layout">
           <div class="settings-stack">
             <section class="settings-card" aria-labelledby="profileTitle">
-              <div class="card-heading"><div><h2 id="profileTitle">Hospital profile</h2></div><span class="section-icon" aria-hidden="true">🏥</span></div>
+              <div class="card-heading"><div><h2 id="profileTitle">Hospital profile</h2></div><span class="section-icon" aria-hidden="true">HP</span></div>
               <p class="card-kicker">These details are saved in this browser for workspace reference.</p>
               <form id="profileForm">
                 <div class="settings-form-grid">
@@ -114,7 +114,7 @@
             </section>
 
             <section class="settings-card" aria-labelledby="themeTitle">
-              <div class="card-heading"><div><h2 id="themeTitle">Appearance</h2></div><span class="section-icon" aria-hidden="true">🎨</span></div>
+              <div class="card-heading"><div><h2 id="themeTitle">Appearance</h2></div><span class="section-icon" aria-hidden="true">AP</span></div>
               <p class="card-kicker">Choose a visual style for this browser. Your choice is remembered on this device.</p>
               <div class="theme-options" role="group" aria-label="Choose theme">
                 <button type="button" class="theme-choice" data-theme-choice="blue" aria-pressed="false"><span class="theme-swatch"><i style="background:#f8fafc"></i><i style="background:#0f2a4d"></i><i style="background:#2563eb"></i></span><strong>Hospital Blue</strong><small>Clean and familiar</small></button>
@@ -138,7 +138,7 @@
 
           <aside class="settings-stack">
             <section class="settings-card" aria-labelledby="storageTitle">
-              <div class="card-heading"><div><h2 id="storageTitle">Local data overview</h2></div><span class="section-icon" aria-hidden="true">💾</span></div>
+              <div class="card-heading"><div><h2 id="storageTitle">Local data overview</h2></div><span class="section-icon" aria-hidden="true">DS</span></div>
               <p class="card-kicker">Records are stored in this browser's localStorage—not in a shared hospital database.</p>
               <div class="storage-summary"><div><div class="small-label">Approx. browser storage used</div><div class="storage-number" id="storageUsed">0 KB</div></div><span class="badge badge-info" id="recordTotal">0 records</span></div>
               <div class="storage-track" role="progressbar" aria-label="Approximate local storage usage" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div class="storage-fill" id="storageFill"></div></div>
@@ -148,7 +148,7 @@
             </section>
 
             <section class="settings-card" aria-labelledby="backupTitle">
-              <div class="card-heading"><div><h2 id="backupTitle">Backup &amp; restore</h2></div><span class="section-icon" aria-hidden="true">📦</span></div>
+              <div class="card-heading"><div><h2 id="backupTitle">Backup &amp; restore</h2></div><span class="section-icon" aria-hidden="true">BR</span></div>
               <p class="card-kicker">Export a JSON backup or restore a previously exported LifeBridge file.</p>
               <div class="backup-actions"><button type="button" class="btn btn-primary" id="exportBackup">⬇ Export backup</button><button type="button" class="btn btn-secondary" id="chooseRestore">⬆ Restore from backup</button><input class="hidden-file" id="restoreFile" type="file" accept=".json,application/json" aria-label="Choose a JSON backup file"></div>
               <div class="status-line" id="backupStatus" role="status" aria-live="polite"></div>
@@ -156,7 +156,7 @@
             </section>
 
             <section class="settings-card danger-zone" aria-labelledby="resetTitle">
-              <div class="card-heading"><div><h2 id="resetTitle">Clear local records</h2></div><span class="section-icon" style="background:#fef2f2;color:#b91c1c" aria-hidden="true">⚠️</span></div>
+              <div class="card-heading"><div><h2 id="resetTitle">Clear local records</h2></div><span class="section-icon" style="background:#fef2f2;color:#b91c1c" aria-hidden="true">!</span></div>
               <p class="card-kicker">Permanently remove the app's hospital records from this browser. This cannot be undone.</p>
               <button type="button" class="btn btn-danger" id="clearData" style="width:100%">Clear all hospital data</button>
               <div class="status-line" id="clearStatus" role="status" aria-live="polite"></div>
@@ -187,10 +187,15 @@
         return response.text().then(function (text) {
           if (!text.trim()) throw new Error('Server returned an empty response.');
           try { return JSON.parse(text); } catch (_) {
-            var preview = text.slice(0, 160).replace(/\s+/g, ' ');
-            throw new Error('Server returned an invalid response (HTTP ' + response.status + '). ' + preview);
+            throw new Error('The AI server returned an invalid response (HTTP ' + response.status + ').');
           }
         });
+      }
+      function apiRequest(primaryPath, fallbackPath, options) {
+        return fetch(primaryPath, options).then(function (response) {
+          if (response.status === 404 && fallbackPath) return fetch(fallbackPath, options);
+          return response;
+        }).then(safeJson);
       }
       function setStatus(element, message, kind) {
         element.textContent = message;
@@ -252,8 +257,8 @@
       function checkConnection() {
         var badge = $('connectionState');
         badge.textContent = 'Checking'; badge.className = 'connection-pill';
-        return fetch('/api/status', { method: 'GET', cache: 'no-store' })
-          .then(safeJson).then(function (data) {
+        return apiRequest('/api/status', '/api/settings/status', { method: 'GET', cache: 'no-store' })
+          .then(function (data) {
             aiHost = data.host || 'vercel';
             $('aiForm').style.display = '';
             var tabHasKey = false;
@@ -271,7 +276,7 @@
             return data;
           }).catch(function (error) {
             badge.textContent = 'Server unavailable'; badge.className = 'connection-pill offline';
-            setStatus($('aiStatus'), 'AI API route is missing on this host. Deploy this project on Vercel with the api folder at the project root, or run node server.js locally. ' + error.message, 'error');
+            setStatus($('aiStatus'), 'AI server is unavailable. Open this app through http://localhost:3000 after running npm start, or redeploy the Vercel project from this folder. ' + error.message, 'error');
             return null;
           });
       }
@@ -354,8 +359,8 @@
           if (!key) { setStatus($('aiStatus'), 'Enter your API key first.', 'error'); return; }
           $('connectButton').disabled = true;
           setStatus($('aiStatus'), 'Checking API key with ChatterMate...', '');
-          fetch('/api/connect', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ apiKey: key }) })
-            .then(safeJson).then(function (result) {
+          apiRequest('/api/connect', '/api/settings/connect', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ apiKey: key }) })
+            .then(function (result) {
               if (result.error) throw new Error(result.error);
               sessionStorage.setItem(AI_SESSION_KEY, key);
               $('apiKeyInput').value = '';

@@ -264,7 +264,7 @@
       addBubble('assistant', formatAnswer(result.answer || 'No response text received.'));
     } catch (error) {
       console.error('[Chat Error]', error);
-      addBubble('error-bubble', '⚠️ ' + escapeHtmlText(error && error.message ? error.message : error));
+      addBubble('error-bubble', escapeHtmlText(error && error.message ? error.message : error));
     } finally {
       setBusy(false);
     }
@@ -277,7 +277,7 @@
 
     var input = document.getElementById('chatInput');
     if (!input) {
-      addBubble('error-bubble', '⚠️ Chat input was not found. Check the chat.html element id.');
+      addBubble('error-bubble', 'Chat input was not found. Check the chat.html element id.');
       return false;
     }
 
